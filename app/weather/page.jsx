@@ -62,6 +62,229 @@ const WeatherPage = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [detectingLocation, setDetectingLocation] = useState(false);
+
+  const detectMyLocation = async () => {
+    if (!navigator.geolocation) {
+      setError('❌ Geolocation not supported by your browser. Please enter location manually.');
+      return;
+    }
+
+    setDetectingLocation(true);
+    setError('');
+    setLocation('📍 Detecting your location...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        console.log('📍 GPS Coordinates:', lat, lon);
+        
+        try {
+          setLocation('🌍 Getting location name...');
+          
+          // Use OpenWeather Geocoding API to get city name from coordinates
+          const openWeatherKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+          const geoResponse = await fetch(
+            `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${openWeatherKey}`
+          );
+          
+          if (!geoResponse.ok) {
+            throw new Error('Failed to get location details');
+          }
+          
+          const geoData = await geoResponse.json();
+          
+          if (geoData && geoData.length > 0) {
+            const locationInfo = geoData[0];
+            const detectedLocation = `${locationInfo.name}, ${locationInfo.state || locationInfo.country}`;
+            setLocation(detectedLocation);
+            console.log('✅ Location detected:', detectedLocation);
+            
+            setDetectingLocation(false);
+            
+            // Auto-fetch weather after detecting location
+            setTimeout(() => {
+              fetchWeatherDataForCity(locationInfo.name);
+            }, 300);
+          } else {
+            throw new Error('Location data not available');
+          }
+        } catch (err) {
+          console.error('Location detection error:', err);
+          setError(`❌ Failed to detect location: ${err.message}. Please try again or enter manually.`);
+          setLocation('');
+          setDetectingLocation(false);
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        let errorMsg = '❌ Location access denied. ';
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMsg += 'Please allow location access in your browser settings.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMsg += 'Location information is unavailable. Check your device settings.';
+            break;
+          case error.TIMEOUT:
+            errorMsg += 'Location request timed out. Please try again.';
+            break;
+          default:
+            errorMsg += 'An unknown error occurred.';
+        }
+        
+        setError(errorMsg);
+        setLocation('');
+        setDetectingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+      }
+    );
+  };
+
+  const fetchWeatherDataForCity = async (cityName) => {
+    if (!cityName || cityName.trim() === '') {
+      setError('Please enter a valid location');
+      return;
+    }
+
+    console.log('🔍 Searching weather for:', cityName);
+    
+    setLoading(true);
+    setError('');
+    setWeatherData(null); // Clear old data first
+
+    try {
+      const weatherApiKey = process.env.NEXT_PUBLIC_WEATHERAPI_KEY;
+      
+      if (!weatherApiKey) {
+        throw new Error('WeatherAPI key not configured');
+      }
+      
+      const searchQuery = encodeURIComponent(cityName.trim());
+      
+      // First, search for exact location match using WeatherAPI search
+      const searchUrl = `https://api.weatherapi.com/v1/search.json?key=${weatherApiKey}&q=${searchQuery}`;
+      console.log('🔎 Searching locations...');
+      
+      const searchResponse = await fetch(searchUrl);
+      if (!searchResponse.ok) {
+        throw new Error('Failed to search locations');
+      }
+      
+      const searchResults = await searchResponse.json();
+      console.log('📍 Found locations:', searchResults);
+      
+      if (!searchResults || searchResults.length === 0) {
+        throw new Error(`No location found for "${cityName}". Please check spelling.`);
+      }
+      
+      // Find best match with intelligent matching
+      const searchLower = cityName.toLowerCase().trim();
+      const searchWords = searchLower.split(/[\s,]+/); // Split by space or comma
+      
+      let bestMatch = null;
+      
+      // Priority 1: Exact full match (city + region/state)
+      bestMatch = searchResults.find(loc => 
+        `${loc.name}, ${loc.region}`.toLowerCase() === searchLower ||
+        `${loc.name} ${loc.region}`.toLowerCase() === searchLower
+      );
+      
+      // Priority 2: Match city name + region name appears in search
+      if (!bestMatch && searchWords.length > 1) {
+        const cityWord = searchWords[0];
+        const regionWords = searchWords.slice(1);
+        
+        bestMatch = searchResults.find(loc => {
+          const locName = loc.name.toLowerCase();
+          const locRegion = loc.region.toLowerCase();
+          const locCountry = loc.country.toLowerCase();
+          
+          // Check if city matches and any search word matches region/state
+          return locName === cityWord && regionWords.some(word => 
+            locRegion.includes(word) || locCountry.includes(word)
+          );
+        });
+      }
+      
+      // Priority 3: Exact city name match only
+      if (!bestMatch) {
+        bestMatch = searchResults.find(loc => 
+          loc.name.toLowerCase() === searchWords[0]
+        );
+      }
+      
+      // Priority 4: Use first result as fallback
+      if (!bestMatch) {
+        bestMatch = searchResults[0];
+      }
+      
+      console.log('✅ Best match:', bestMatch.name, bestMatch.region, bestMatch.country, '(from', searchResults.length, 'results)');
+      
+      // Now fetch weather for the exact location using lat/lon
+      const forecastUrl = `https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${bestMatch.lat},${bestMatch.lon}&days=7&aqi=no`;
+      
+      console.log('📡 Fetching weather data...');
+      const response = await fetch(forecastUrl);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch weather data');
+      }
+      
+      const data = await response.json();
+      console.log('✅ Weather data received for:', data.location.name, data.location.region);
+      
+      const dailyForecast = data.forecast.forecastday.map(day => ({
+        day: new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' }),
+        temp: Math.round(day.day.avgtemp_c),
+        humidity: day.day.avghumidity,
+        rainfall: day.day.totalprecip_mm || 0,
+        wind: day.day.maxwind_kph,
+        description: day.day.condition.text,
+        icon: `https:${day.day.condition.icon}`
+      }));
+
+      console.log('🤖 Fetching AI recommendations...');
+      const geminiRecommendation = await fetchGeminiRecommendations(
+        `${data.location.name}, ${data.location.region}, ${data.location.country}`, 
+        dailyForecast
+      );
+
+      const newWeatherData = {
+        city: data.location.name,
+        country: data.location.country,
+        region: data.location.region,
+        lat: data.location.lat,
+        lon: data.location.lon,
+        forecast: dailyForecast,
+        recommendations: geminiRecommendation,
+        current: {
+          temp: Math.round(data.current.temp_c),
+          feelsLike: Math.round(data.current.feelslike_c),
+          humidity: data.current.humidity,
+          wind: data.current.wind_kph,
+          condition: data.current.condition.text,
+          icon: `https:${data.current.condition.icon}`
+        }
+      };
+      
+      console.log('💾 Setting weather data:', newWeatherData.city);
+      setWeatherData(newWeatherData);
+      
+    } catch (err) {
+      console.error('❌ Weather fetch error:', err);
+      setError(err.message || 'Failed to fetch weather data');
+      setWeatherData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchGeminiRecommendations = async (location, forecast) => {
     try {
@@ -111,57 +334,13 @@ Weather data: ${JSON.stringify(forecast)}
   };
 
   const fetchWeatherData = async () => {
-    if (!location) {
+    const trimmedLocation = location.trim();
+    if (!trimmedLocation) {
       setError('Please enter a location.');
       return;
     }
-    setLoading(true);
-    setError('');
-    setWeatherData(null);
-
-    try {
-      const weatherApiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${weatherApiKey}&units=metric`);
-      if (!response.ok) throw new Error('Location not found. Please try again.');
-      
-      const data = await response.json();
-      
-      const dailyData = data.list.reduce((acc, entry) => {
-        const date = entry.dt_txt.split(' ')[0];
-        if (!acc[date]) {
-          acc[date] = [];
-        }
-        acc[date].push(entry);
-        return acc;
-      }, {});
-
-      const dailyForecast = Object.keys(dailyData).slice(0, 7).map(date => {
-        const dayEntries = dailyData[date];
-        const entry = dayEntries.find(e => e.dt_txt.includes("12:00:00")) || dayEntries[0];
-        return {
-          day: new Date(entry.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-          temp: Math.round(entry.main.temp),
-          humidity: entry.main.humidity,
-          rainfall: entry.rain?.['3h'] || 0,
-          wind: entry.wind.speed,
-          description: entry.weather[0].description,
-          icon: `https://openweathermap.org/img/wn/${entry.weather[0].icon}@2x.png`
-        };
-      });
-
-      const geminiRecommendation = await fetchGeminiRecommendations(location, dailyForecast);
-
-      setWeatherData({
-        city: data.city.name,
-        country: data.city.country,
-        forecast: dailyForecast,
-        recommendations: geminiRecommendation
-      });
-    } catch (err) {
-      setError(err.message || 'Failed to fetch weather data');
-    } finally {
-      setLoading(false);
-    }
+    console.log('🔎 Manual search for:', trimmedLocation);
+    await fetchWeatherDataForCity(trimmedLocation);
   };
 
   const handleSubmit = (e) => {
@@ -196,15 +375,26 @@ Weather data: ${JSON.stringify(forecast)}
               <FiMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Enter your city or district..."
+                placeholder="Enter city name (e.g., Durg, Mumbai, Delhi)..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
               />
+              <p className="text-xs text-gray-500 mt-1 ml-12">
+                💡 Tip: Use full city name for accurate results. Try "Durg, Chhattisgarh" instead of just "Durg"
+              </p>
             </div>
             <button
+              type="button"
+              onClick={detectMyLocation}
+              disabled={detectingLocation || loading}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:bg-blue-400"
+            >
+              {detectingLocation ? 'Detecting...' : <><FiMapPin /><span>Use My Location</span></>}
+            </button>
+            <button
               type="submit"
-              disabled={loading}
+              disabled={loading || detectingLocation}
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all disabled:bg-green-400"
             >
               {loading ? 'Loading...' : <><FiSearch /><span>Get Forecast</span></>}
@@ -218,8 +408,77 @@ Weather data: ${JSON.stringify(forecast)}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Forecast */}
             <div className="lg:col-span-1 space-y-6">
+              {/* Current Weather Card */}
+              {weatherData.current && (
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">{weatherData.city}</h2>
+                      <p className="text-blue-100">{weatherData.region}, {weatherData.country}</p>
+                      <p className="text-xs text-blue-200 mt-1">📍 {weatherData.lat.toFixed(4)}°N, {weatherData.lon.toFixed(4)}°E</p>
+                    </div>
+                    <img src={weatherData.current.icon} alt={weatherData.current.condition} className="w-16 h-16" />
+                  </div>
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-5xl font-bold">{weatherData.current.temp}°</span>
+                    <span className="text-xl">C</span>
+                  </div>
+                  <p className="text-blue-100 mb-4 capitalize">{weatherData.current.condition}</p>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FiThermometer className="w-4 h-4" />
+                      <span>Feels like {weatherData.current.feelsLike}°C</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FiDroplet className="w-4 h-4" />
+                      <span>Humidity {weatherData.current.humidity}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FiWind className="w-4 h-4" />
+                      <span>Wind {weatherData.current.wind} km/h</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Interactive Map */}
+              {weatherData && (
+                <div className="bg-white rounded-2xl shadow-lg p-6">
+                  <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <FiMapPin className="text-green-600" />
+                    Location Map
+                  </h3>
+                  <div className="rounded-lg overflow-hidden border-2 border-gray-200">
+                    <iframe
+                      width="100%"
+                      height="300"
+                      frameBorder="0"
+                      scrolling="no"
+                      marginHeight="0"
+                      marginWidth="0"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${weatherData.lon-0.1},${weatherData.lat-0.1},${weatherData.lon+0.1},${weatherData.lat+0.1}&layer=mapnik&marker=${weatherData.lat},${weatherData.lon}`}
+                      style={{ border: 0 }}
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <a 
+                      href={`https://www.google.com/maps?q=${weatherData.lat},${weatherData.lon}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-700 flex items-center gap-1 font-medium"
+                    >
+                      <FiArrowRight />
+                      Open in Google Maps
+                    </a>
+                    <span className="text-gray-500">
+                      Zoom: 14x
+                    </span>
+                  </div>
+                </div>
+              )}
+
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">7-Day Forecast for {weatherData.city}</h2>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">7-Day Forecast</h2>
                 <div className="space-y-4">
                   {weatherData.forecast.map((day, index) => (
                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">

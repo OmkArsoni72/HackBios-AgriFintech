@@ -18,19 +18,20 @@ export default function GeminiChatbot() {
       async (pos) => {
         const { latitude, longitude } = pos.coords;
         try {
-          // Use OpenWeather API to get detailed location
+          // Use WeatherAPI for better location data
+          const weatherApiKey = process.env.NEXT_PUBLIC_WEATHERAPI_KEY;
           const res = await fetch(
-            `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+            `https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${latitude},${longitude}&aqi=no`
           );
           const data = await res.json();
           
-          if (data && data.length > 0) {
-            const locationData = data[0];
-            // Create detailed location string with city, state, and country
+          if (data && data.location) {
+            const loc = data.location;
+            // Create detailed location string with city, region, and country
             const locationName = [
-              locationData.name,
-              locationData.state,
-              locationData.country
+              loc.name,
+              loc.region,
+              loc.country
             ].filter(Boolean).join(", ");
             
             setLocation(locationName || "Unknown Location");

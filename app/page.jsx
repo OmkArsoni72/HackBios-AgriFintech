@@ -168,20 +168,22 @@ const LandingPage = () => {
       async (pos) => {
         try {
           const { latitude, longitude } = pos.coords;
+          // Use WeatherAPI for better location data
+          const weatherApiKey = process.env.NEXT_PUBLIC_WEATHERAPI_KEY;
           const response = await fetch(
-            `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+            `https://api.weatherapi.com/v1/current.json?key=${weatherApiKey}&q=${latitude},${longitude}&aqi=no`
           );
           if (response.ok) {
             const data = await response.json();
-            const loc = data[0];
-            const detectedLocation = `${loc.name}, ${loc.state}, ${loc.country}`;
+            const loc = data.location;
+            const detectedLocation = `${loc.name}, ${loc.region}, ${loc.country}`;
             setDetectedArea(detectedLocation);
-            filterProductsByLocation(loc.state);
+            filterProductsByLocation(loc.region);
             // Auto language switch if user has not chosen manually
             if (!localStorage.getItem("userLangPref")) {
               const prev = i18n.language;
-              switchLanguageForState(loc.state);
-              if (i18n.language !== prev && stateToLanguage[loc.state]) {
+              switchLanguageForState(loc.region);
+              if (i18n.language !== prev && stateToLanguage[loc.region]) {
                 setToast({ type: "lang", msg: t("Language switched for your region") + ": " + i18n.language.toUpperCase() });
               }
             }
