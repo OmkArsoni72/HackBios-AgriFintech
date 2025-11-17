@@ -21,7 +21,7 @@ export default function GeminiChatbot() {
           `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
         );
         const data = await res.json();
-        setLocation(data[0]?.name || "Unknown");
+        setLocation(data[0]?.name || "Unknown"); 
       },
       () => setLocation("Unable to detect location")
     );

@@ -69,6 +69,7 @@ const LandingPage = () => {
   const [detectedArea, setDetectedArea] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(foodItems);
+  const [realProducts, setRealProducts] = useState([]); // Products from backend
   const [categories] = useState(["all", "vegetables", "fruits", "grains", "dairy"]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
@@ -76,6 +77,42 @@ const LandingPage = () => {
   const [manualLang, setManualLang] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+
+  // Fetch approved products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products?status=approved');
+        const data = await response.json();
+        
+        if (data.success && data.data.length > 0) {
+          // Transform backend products to match foodItems format
+          const transformed = data.data.map(p => ({
+            id: p._id,
+            name: p.productName,
+            price: `₹${p.price}/${p.unit}`,
+            origin: `${p.district}, ${p.state}`,
+            category: p.category.toLowerCase(),
+            rating: 4.5,
+            image: p.images[0] || '/images/default-product.jpg',
+            description: p.description || '',
+            quantity: `${p.quantity} ${p.unit}`,
+            organic: p.organicCertified,
+            seller: p.contactName,
+            phone: p.contactPhone,
+          }));
+          setRealProducts(transformed);
+          // Mix real products with static foodItems
+          setFilteredProducts([...transformed, ...foodItems]);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        // Fallback to static products
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   // Initialize manualLang only on client
   useEffect(() => {
@@ -128,7 +165,10 @@ const LandingPage = () => {
 
   // Filtering + sorting
   useEffect(() => {
-    let fp = [...foodItems];
+    // Combine real products with static foodItems
+    let allItems = [...realProducts, ...foodItems];
+    let fp = allItems;
+    
     if (selectedCategory !== "all") {
       fp = fp.filter((p) => p.category.toLowerCase() === selectedCategory);
     }
@@ -152,7 +192,7 @@ const LandingPage = () => {
       }
     });
     setFilteredProducts(fp);
-  }, [searchQuery, selectedCategory, sortBy]);
+  }, [searchQuery, selectedCategory, sortBy, realProducts]);
 
   const getLocation = () => {
     setIsLocating(true);
@@ -198,10 +238,11 @@ const LandingPage = () => {
   };
 
   const filterProductsByLocation = (state) => {
-    const filtered = foodItems.filter(
+    const allItems = [...realProducts, ...foodItems];
+    const filtered = allItems.filter(
       (p) => p.origin.includes(state) || p.name.toLowerCase().includes("local")
     );
-    setFilteredProducts(filtered.length ? filtered : foodItems.slice(0, 8));
+    setFilteredProducts(filtered.length ? filtered : allItems.slice(0, 8));
   };
 
   const handleManualSearch = () => {
@@ -212,7 +253,8 @@ const LandingPage = () => {
   };
 
   const clearFilters = () => {
-    setFilteredProducts(foodItems);
+    const allItems = [...realProducts, ...foodItems];
+    setFilteredProducts(allItems);
     setDetectedArea("");
     setSearchQuery("");
     setSelectedCategory("all");

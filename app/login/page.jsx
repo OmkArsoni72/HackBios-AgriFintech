@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FiMail, FiLock, FiUser, FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
+import { authAPI } from "@/lib/api";
 
 export default function LoginRegisterPage() {
   const router = useRouter();
@@ -54,27 +55,41 @@ export default function LoginRegisterPage() {
       }
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      
+    try {
       if (isLogin) {
-        // Store user data in localStorage
-        const userData = {
-          name: formData.name || formData.email.split('@')[0],
+        // Login API call
+        const response = await authAPI.login({
           email: formData.email,
-          loginTime: new Date().toISOString()
-        };
-        localStorage.setItem("agrifinai_user", JSON.stringify(userData));
-        
-        setSuccess("Login successful! Redirecting...");
-        setTimeout(() => router.push("/dashboard"), 1500);
+          password: formData.password
+        });
+
+        // Store token and user data
+        if (response.success) {
+          localStorage.setItem("agrifinai_token", response.data.token);
+          localStorage.setItem("agrifinai_user", JSON.stringify(response.data.user));
+          
+          setSuccess("Login successful! Redirecting...");
+          setTimeout(() => router.push("/dashboard"), 1500);
+        }
       } else {
-        setSuccess("Registration successful! Please login.");
-        setIsLogin(true);
-        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+        // Register API call
+        const response = await authAPI.register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
+
+        if (response.success) {
+          setSuccess("Registration successful! Please login.");
+          setIsLogin(true);
+          setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+        }
       }
-    }, 1500);
+    } catch (err) {
+      setError(err.message || (isLogin ? "Login failed" : "Registration failed"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleMode = () => {

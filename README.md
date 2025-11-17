@@ -114,8 +114,78 @@ agri-app/
 
 ## Deploy on Vercel
 
-Deploy your Next.js app easily using [Vercel](https://hack-bios-agri-fintech.vercel.app/).
+### 🚀 Quick Deployment Guide
 
+**👉 START HERE: [DEPLOYMENT_INDEX.md](./DEPLOYMENT_INDEX.md) - Complete documentation guide**
+
+This project is ready to deploy on Vercel! We've included comprehensive deployment documentation:
+
+#### 📚 Deployment Documentation
+
+1. **[DEPLOYMENT_VISUAL_GUIDE.md](./DEPLOYMENT_VISUAL_GUIDE.md)** - ⭐ **START HERE!**
+   - Step-by-step visual guide with screenshots
+   - Perfect for beginners
+   - Clear instructions for each step
+
+2. **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - Complete detailed guide
+   - MongoDB Atlas setup
+   - GitHub integration
+   - Vercel deployment (Frontend + Backend)
+   - Environment variables configuration
+   - Troubleshooting section
+
+3. **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** - Quick checklist format
+   - Track your progress
+   - Ensure nothing is missed
+
+4. **[DEPLOYMENT_SCRIPTS.md](./DEPLOYMENT_SCRIPTS.md)** - Commands & scripts
+   - Copy-paste ready commands
+   - Useful tools and resources
+
+5. **[DEPLOYMENT_SUMMARY.md](./DEPLOYMENT_SUMMARY.md)** - Executive summary
+   - Quick overview
+   - Architecture diagram
+   - Time estimates
+
+### ⚡ Quick Start
+
+```bash
+# 1. Setup MongoDB Atlas (cloud database)
+# 2. Push code to GitHub
+git add .
+git commit -m "Ready for deployment"
+git push
+
+# 3. Deploy on Vercel
+# Visit: https://vercel.com/new
+# Import your repository twice:
+#   - Once for backend (root: backend/my-express-mongodb-app)
+#   - Once for frontend (root: /)
+```
+
+### 🔧 Environment Variables Needed
+
+**Frontend (Vercel):**
+- `NEXT_PUBLIC_API_URL` - Your backend URL + /api
+- `NEXTAUTH_SECRET` - Random secret key
+- `NEXTAUTH_URL` - Your frontend URL
+
+**Backend (Vercel):**
+- `MONGODB_URI` - MongoDB Atlas connection string
+- `JWT_SECRET` - Random secret key
+- `NODE_ENV` - production
+- `FRONTEND_URL` - Your frontend URL
+
+### 📖 Full Documentation
+
+👉 **Read [DEPLOYMENT_VISUAL_GUIDE.md](./DEPLOYMENT_VISUAL_GUIDE.md) for complete step-by-step instructions**
+
+**Estimated Time:** 30-45 minutes for first deployment  
+**Cost:** FREE (using Vercel + MongoDB Atlas free tiers)
+
+---
+
+**Live Demo**: [https://hack-bios-agri-fintech.vercel.app/](https://hack-bios-agri-fintech.vercel.app/)
 
 ---
 

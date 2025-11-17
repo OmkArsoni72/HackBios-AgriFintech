@@ -13,7 +13,10 @@ const Header = () => {
      <div className="hidden md:flex space-x-6">
        <Link href="/home" className="hover:text-yellow-300 font-semibold">Home</Link>
        <Link href="/about" className="hover:text-yellow-300 font-semibold">About</Link>
+       <Link href="/marketplace" className="hover:text-yellow-300 font-semibold">Marketplace</Link>
+       <Link href="/sell" className="hover:text-yellow-300 font-semibold">Sell</Link>
        <Link href="/loan" className="hover:text-yellow-300 font-semibold">Loan</Link>
+       <Link href="/admin/login" className="hover:text-yellow-300 font-semibold">Admin</Link>
        <Link href="/contact" className="hover:text-yellow-300 font-semibold">Contact</Link>
      </div>
 

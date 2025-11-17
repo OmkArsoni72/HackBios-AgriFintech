@@ -32,9 +32,19 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# backend specific
+backend/my-express-mongodb-app/.env
+backend/my-express-mongodb-app/node_modules
+backend/my-express-mongodb-app/logs/*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
 
 # typescript
 *.tsbuildinfo

@@ -22,8 +22,13 @@ const SoilHealthForm = ({ onSubmit, loading }) => {
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
-      setFormData(prev => ({ ...prev, image: e.target.files[0] }));
-      setFileName(e.target.files[0].name);
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, image: reader.result }));
+        setFileName(file.name);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
