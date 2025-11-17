@@ -10,7 +10,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-800 antialiased">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('darkMode') === 'true') {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 antialiased">
         {children}
         <GeminiChatbot />
       </body>

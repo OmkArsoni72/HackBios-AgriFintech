@@ -61,7 +61,7 @@ AgriFinAI is a web-based platform that provides:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/heytabrej/AgriFinAI.git
+   git clone https://github.com/OmkArsoni72/HackBios-AgriFintech.git
    cd agri-app
    ```
 
@@ -114,7 +114,7 @@ agri-app/
 
 ## Deploy on Vercel
 
-Deploy your Next.js app easily using [Vercel](https://agri-fin-ai-git-main-heytabrejs-projects.vercel.app).
+Deploy your Next.js app easily using [Vercel](https://hack-bios-agri-fintech.vercel.app/).
 
 
 ---

@@ -23,7 +23,6 @@ import {
   FiClock,
   FiPhone,
 } from "react-icons/fi";
-import { motion } from "framer-motion";
 
 const stateToLanguage = {
   Maharashtra: "mr",
@@ -305,13 +304,32 @@ const LandingPage = () => {
                 {darkMode ? t("Light") : t("Dark")}
               </button>
               {isLoggedIn ? (
-                <Link
-                  href="/profile"
-                  className="px-5 py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition flex items-center gap-2"
-                >
-                  <FiUser className="w-4 h-4" />
-                  {userName}
-                </Link>
+                <div className="relative group">
+                  <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition">
+                    <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {userName.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-gray-700 dark:text-gray-300 font-medium">{userName}</span>
+                  </button>
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-200 dark:border-gray-700">
+                    <Link href="/dashboard" className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-t-lg transition font-medium">
+                      Dashboard
+                    </Link>
+                    <Link href="/profile" className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium">
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("agrifinai_user");
+                        setIsLoggedIn(false);
+                        setUserName("");
+                      }}
+                      className="w-full text-left px-4 py-3 text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-b-lg transition font-medium"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
               ) : (
                 <Link
                   href="/login"
@@ -400,27 +418,16 @@ const LandingPage = () => {
           <div className="absolute inset-0 bg-gradient-to-br from-green-600/10 via-transparent to-emerald-600/10" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative">
             <div className="grid lg:grid-cols-2 gap-14 items-center">
-              <motion.div
-                className="space-y-8"
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, ease: "easeOut" }}
-                viewport={{ once: true }}
-              >
+              <div className="space-y-8">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur border border-green-100 text-sm font-medium text-green-700 shadow-sm">
                   🌱 {t("Empowering Farmers with AI")}
                 </div>
-                <motion.h1
-                  className="text-4xl md:text-6xl font-extrabold leading-tight"
-                  initial={{ backgroundPosition: "0% 50%" }}
-                  animate={{ backgroundPosition: "100% 50%" }}
-                  transition={{ duration: 4, repeat: Infinity, repeatType: "reverse" }}
-                >
+                <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
                   <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
                     {t("Direct Farm")}
                   </span>{" "}
                   {t("Marketplace & Intelligence")}
-                </motion.h1>
+                </h1>
                 <p className="text-lg text-gray-600 leading-relaxed max-w-xl">
                   {t(
                     "Discover verified farm-fresh produce, negotiate directly with growers, and access actionable insights for smarter sourcing."
@@ -472,15 +479,9 @@ const LandingPage = () => {
                   </div>
                 </div>
                 {locationError && <p className="text-sm text-red-500">{locationError}</p>}
-              </motion.div>
+              </div>
 
-              <motion.div
-                className="relative"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-                viewport={{ once: true }}
-              >
+              <div className="relative">
                 <div className="absolute -inset-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-3xl opacity-20 rotate-3" />
                 <div className="relative grid grid-cols-2 gap-4">
                   {filteredProducts.slice(0, 4).map((p) => (
@@ -500,35 +501,27 @@ const LandingPage = () => {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             </div>
 
             {/* Stats */}
-            <motion.div
-              className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true }}
-              variants={{ hidden: {}, show: { transition: { staggerChildren: 0.15 } } }}
-            >
+            <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
                 { number: "5,000+", label: t("Active Farmers"), icon: FiUsers },
                 { number: "₹2Cr+", label: t("Transactions"), icon: FiTrendingUp },
                 { number: "50+", label: t("Cities Covered"), icon: FiMapPin },
                 { number: "4.8★", label: t("Platform Rating"), icon: FiStar },
               ].map((item, i) => (
-                <motion.div
+                <div
                   key={i}
-                  variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-                  whileHover={{ scale: 1.05 }}
-                  className="text-center group bg-white/70 dark:bg-gray-800/60 backdrop-blur rounded-2xl p-5 border border-green-100 dark:border-gray-700 hover:shadow-lg transition"
+                  className="text-center group bg-white/70 dark:bg-gray-800/60 backdrop-blur rounded-2xl p-5 border border-green-100 dark:border-gray-700 hover:shadow-lg hover:scale-105 transition-all duration-300"
                 >
                   <item.icon className="w-7 h-7 text-green-600 mx-auto mb-2" />
                   <h3 className="text-2xl font-bold text-green-700 dark:text-green-400">{item.number}</h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">{item.label}</p>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </section>
 

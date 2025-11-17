@@ -68,7 +68,7 @@ export default function LoginRegisterPage() {
         localStorage.setItem("agrifinai_user", JSON.stringify(userData));
         
         setSuccess("Login successful! Redirecting...");
-        setTimeout(() => router.push("/profile"), 1500);
+        setTimeout(() => router.push("/dashboard"), 1500);
       } else {
         setSuccess("Registration successful! Please login.");
         setIsLogin(true);
