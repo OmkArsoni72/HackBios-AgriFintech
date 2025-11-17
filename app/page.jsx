@@ -22,6 +22,7 @@ import {
   FiUsers,
   FiClock,
   FiPhone,
+  FiUser,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 

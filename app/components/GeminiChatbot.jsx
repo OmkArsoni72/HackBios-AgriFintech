@@ -13,51 +13,146 @@ export default function GeminiChatbot() {
       setLocation("Location not supported");
       return;
     }
+    setLocation("Detecting...");
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude, longitude } = pos.coords;
-        // Use OpenWeather API or similar to get area name
-        const res = await fetch(
-          `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
-        );
-        const data = await res.json();
-        setLocation(data[0]?.name || "Unknown");
+        try {
+          // Use OpenWeather API to get detailed location
+          const res = await fetch(
+            `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
+          );
+          const data = await res.json();
+          
+          if (data && data.length > 0) {
+            const locationData = data[0];
+            // Create detailed location string with city, state, and country
+            const locationName = [
+              locationData.name,
+              locationData.state,
+              locationData.country
+            ].filter(Boolean).join(", ");
+            
+            setLocation(locationName || "Unknown Location");
+          } else {
+            // Fallback: Use coordinates
+            setLocation(`${latitude.toFixed(2)}°N, ${longitude.toFixed(2)}°E`);
+          }
+        } catch (error) {
+          console.error("Location fetch error:", error);
+          setLocation(`${latitude.toFixed(2)}°N, ${longitude.toFixed(2)}°E`);
+        }
       },
-      () => setLocation("Unable to detect location")
+      (error) => {
+        console.error("Geolocation error:", error);
+        setLocation("Unable to detect location - Please enable location access");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
     );
   };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
+    
+    const userInput = input;
     setLoading(true);
-    setMessages([...messages, { role: "user", content: input }]);
+    setMessages([...messages, { role: "user", content: userInput }]);
     setInput("");
+    
     try {
       const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      const prompt = `
-You are AgriConnect's AI assistant. Respond in markdown with double asterisks for headings and bold text. Limit your answer to 100-150 words.
-User location: ${location || "Not provided"}.
-If user asks about crops or soil, use relevant context.
-User query: "${input}"
-Always cite your sources (public datasets, government portals, etc.) and explain your reasoning for reliability.
-      `;
+      
+      if (!geminiApiKey) {
+        setMessages((msgs) => [...msgs, { role: "bot", content: "⚠️ API key missing. Please configure NEXT_PUBLIC_GEMINI_API_KEY in .env.local" }]);
+        setLoading(false);
+        return;
+      }
+
+      const prompt = `You are AgriFinAI's intelligent farming assistant for Indian agriculture. 
+
+**Context:**
+- User Location: ${location || "Not specified"}
+- Query: "${userInput}"
+
+**Instructions:**
+- Provide practical, actionable advice for Indian farmers
+- Use simple language with Hindi/local terms where helpful
+- Include specific crop varieties, timings, and practices suitable for Indian conditions
+- Cite government schemes (PM-KISAN, Soil Health Card, etc.) where relevant
+- Keep response between 100-150 words
+- Use **bold** for key points
+
+**Response Format:**
+Use clear sections with double asterisks for headings like **Recommendation:** or **Key Points:**`;
+
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`,
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+          body: JSON.stringify({ 
+            contents: [{ 
+              parts: [{ text: prompt }] 
+            }],
+            generationConfig: {
+              temperature: 0.7,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 500,
+            }
+          }),
         }
       );
+      
+      if (!res.ok) {
+        let errorMessage = `API returned ${res.status}`;
+        try {
+          const errorData = await res.json();
+          console.error("API Error:", errorData);
+          errorMessage = errorData.error?.message || errorMessage;
+        } catch (e) {
+          console.error("Could not parse error response");
+        }
+        throw new Error(errorMessage);
+      }
+
       const data = await res.json();
-      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response.";
+      console.log("API Response:", data);
+      
+      // Check for various response formats
+      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 
+                     data.candidates?.[0]?.output || 
+                     data.text;
+      
+      if (!answer) {
+        console.error("Full API response:", JSON.stringify(data, null, 2));
+        throw new Error("No valid response from API. The API key might have exceeded its quota or the model is unavailable.");
+      }
+      
       setMessages((msgs) => [...msgs, { role: "bot", content: answer }]);
     } catch (err) {
-      setMessages((msgs) => [...msgs, { role: "bot", content: "Error fetching response. Please check your internet connection or try again later." }]);
+      console.error("Chatbot error:", err);
+      
+      let errorMsg = err.message;
+      if (err.message.includes("quota") || err.message.includes("429")) {
+        errorMsg = "🚫 **API Quota Exceeded**\n\nYour Gemini API key has reached its limit.\n\n**Solutions:**\n1. Get a new API key from https://aistudio.google.com/apikey\n2. Wait for quota reset\n3. Upgrade your API plan";
+      } else if (err.message.includes("401") || err.message.includes("403")) {
+        errorMsg = "🔑 **Invalid API Key**\n\nPlease check your NEXT_PUBLIC_GEMINI_API_KEY in .env.local file";
+      }
+      
+      setMessages((msgs) => [...msgs, { 
+        role: "bot", 
+        content: `❌ **Error:** ${errorMsg}` 
+      }]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
