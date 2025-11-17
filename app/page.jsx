@@ -48,7 +48,7 @@ const stateToLanguage = {
 
 // Helper to safely switch
 function switchLanguageForState(state, manual = false) {
-  if (!state) return;
+  if (!state || typeof window === 'undefined') return;
   const code = stateToLanguage[state];
   if (code && i18n.language !== code) {
     // If user manually selected or no manual selection stored yet
@@ -74,7 +74,26 @@ const LandingPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [toast, setToast] = useState(null);
-  const [manualLang, setManualLang] = useState(localStorage.getItem("userLangPref") || "");
+  const [manualLang, setManualLang] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
+
+  // Initialize manualLang only on client
+  useEffect(() => {
+    setManualLang(localStorage.getItem("userLangPref") || "");
+  }, []);
+
+  // Check login status
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const userData = localStorage.getItem("agrifinai_user");
+      if (userData) {
+        const parsed = JSON.parse(userData);
+        setIsLoggedIn(true);
+        setUserName(parsed.name || parsed.email.split('@')[0]);
+      }
+    }
+  }, []);
 
   // Auto language adjust
   useEffect(() => {
@@ -92,9 +111,11 @@ const LandingPage = () => {
 
   // Load persisted language once
   useEffect(() => {
-    const stored = localStorage.getItem("userLangPref");
-    if (stored && stored !== i18n.language) {
-      i18n.changeLanguage(stored);
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem("userLangPref");
+      if (stored && stored !== i18n.language) {
+        i18n.changeLanguage(stored);
+      }
     }
   }, []);
 
@@ -202,6 +223,7 @@ const LandingPage = () => {
 
   // Manual language change handler
   const handleManualLanguage = (e) => {
+    if (typeof window === 'undefined') return;
     const val = e.target.value;
     setManualLang(val);
     if (val) {
@@ -282,12 +304,22 @@ const LandingPage = () => {
               >
                 {darkMode ? t("Light") : t("Dark")}
               </button>
-              <Link
-                href="/login"
-                className="px-5 py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition"
-              >
-                {t("Login / Register")}
-              </Link>
+              {isLoggedIn ? (
+                <Link
+                  href="/profile"
+                  className="px-5 py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition flex items-center gap-2"
+                >
+                  <FiUser className="w-4 h-4" />
+                  {userName}
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="px-5 py-2.5 rounded-lg font-semibold bg-green-600 text-white hover:bg-green-700 transition"
+                >
+                  {t("Login / Register")}
+                </Link>
+              )}
             </div>
 
             <button
