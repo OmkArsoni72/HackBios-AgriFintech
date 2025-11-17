@@ -27,9 +27,34 @@ const SoilHealthForm = ({ onSubmit, loading }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    // Convert image to base64 if present
+    let imageBase64 = null;
+    if (formData.image) {
+      try {
+        imageBase64 = await convertImageToBase64(formData.image);
+      } catch (error) {
+        console.error('Image conversion error:', error);
+      }
+    }
+    
+    // Send data with base64 image
+    onSubmit({
+      ...formData,
+      image: imageBase64
+    });
+  };
+
+  // Function to convert image file to base64
+  const convertImageToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (

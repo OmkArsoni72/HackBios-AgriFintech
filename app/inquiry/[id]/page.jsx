@@ -15,11 +15,41 @@ const InquiryPage = () => {
   if (!product) return <div className="min-h-screen flex items-center justify-center text-xl">Product not found.</div>;
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
-  const handleSubmit = e => {
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Inquiry:", { product, form });
-    setSubmitted(true);
-    setTimeout(() => router.push("/"), 2500);
+    
+    try {
+      const response = await fetch('/api/send-inquiry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...form,
+          product: {
+            name: product.name,
+            category: product.category,
+            origin: product.origin,
+            price: product.price,
+          }
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("✅ Inquiry sent successfully!", data);
+        setSubmitted(true);
+        setTimeout(() => router.push("/"), 3000);
+      } else {
+        alert("❌ Failed to send inquiry: " + (data.error || "Please try again"));
+        console.error("Error:", data);
+      }
+    } catch (error) {
+      alert("❌ Network error. Please check your connection and try again.");
+      console.error("Inquiry submission error:", error);
+    }
   };
 
   return (
@@ -113,7 +143,7 @@ const InquiryPage = () => {
                     <FiMail className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold text-green-700 mb-2">Inquiry Sent!</h3>
-                  <p className="text-gray-600 mb-6">We have shared your request with the farmer.</p>
+                  <p className="text-gray-600 mb-6">Check your email for confirmation! The farmer will contact you soon.</p>
                   <Link href="/" className="inline-block px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition">
                     Back to Marketplace
                   </Link>

@@ -18,58 +18,34 @@ const SoilHealthPage = () => {
     setAnalysis(null);
 
     try {
-      const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-      if (!geminiApiKey) {
-        throw new Error("Gemini API key is not configured.");
-      }
-
-      const prompt = `
-        You are an expert agricultural scientist and plant pathologist. A farmer has provided the following information about a crop issue. Analyze the data and provide a detailed report.
-
-        **Farmer's Input:**
-        - **Crop:** ${formData.cropName}
-        - **Soil Type:** ${formData.soilType}
-        - **Soil pH:** ${formData.soilPH || 'Not provided'}
-        - **Observed Symptoms:** ${formData.symptoms}
-        - **Region/Location:** ${formData.location}
-        - **Image of affected plant provided:** ${formData.image ? 'Yes' : 'No'}
-
-        **Your Task:**
-        1.  **Potential Diagnosis:** Based on the symptoms and crop type, list the most likely diseases, nutrient deficiencies, or pest infestations. Provide a probability or confidence level for each.
-        2.  **Detailed Explanation:** For the most likely cause, explain why you think it's the problem, referencing the farmer's input.
-        3.  **Actionable Recommendations:** Provide a clear, step-by-step plan for the farmer to follow. This should include:
-            - **Immediate Actions:** What to do right now.
-            - **Treatment Options:** Suggest both organic and chemical treatments if applicable, including specific product names or active ingredients and application instructions.
-            - **Preventive Measures:** How to prevent this issue in the future.
-        4.  **Disclaimer:** Add a disclaimer that this is an AI-generated analysis and consulting a local agricultural expert is recommended for confirmation.
-
-        Format your response using clear headings with Markdown (**Bold** for headings, bullet points for lists).
-      `;
-
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
+      // Call our backend API for image analysis
+      const response = await fetch('/api/analyze-crop', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-goog-api-key': geminiApiKey
         },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }]
+          cropName: formData.cropName,
+          soilType: formData.soilType,
+          soilPH: formData.soilPH,
+          symptoms: formData.symptoms,
+          location: formData.location,
+          imageBase64: formData.image // Send image as base64
         })
       });
 
       if (!response.ok) {
-        const errorBody = await response.json();
-        throw new Error(errorBody.error?.message || 'Failed to get AI analysis.');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to get AI analysis.');
       }
 
       const data = await response.json();
-      const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
       
-      if (!resultText) {
+      if (!data.analysis) {
         throw new Error("Received an empty response from the AI.");
       }
 
-      setAnalysis(resultText);
+      setAnalysis(data.analysis);
 
     } catch (err) {
       console.error("Soil Health Analysis Error:", err);
