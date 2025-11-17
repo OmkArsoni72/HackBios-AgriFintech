@@ -64,94 +64,100 @@ export default function GeminiChatbot() {
     setInput("");
     
     try {
-      const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+      // Call our backend API instead of direct external API
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: userInput,
+          location: location || 'India'
+        }),
+      });
       
-      if (!geminiApiKey) {
-        setMessages((msgs) => [...msgs, { role: "bot", content: "⚠️ API key missing. Please configure NEXT_PUBLIC_GEMINI_API_KEY in .env.local" }]);
-        setLoading(false);
-        return;
-      }
-
-      const prompt = `You are AgriFinAI's intelligent farming assistant for Indian agriculture. 
-
-**Context:**
-- User Location: ${location || "Not specified"}
-- Query: "${userInput}"
-
-**Instructions:**
-- Provide practical, actionable advice for Indian farmers
-- Use simple language with Hindi/local terms where helpful
-- Include specific crop varieties, timings, and practices suitable for Indian conditions
-- Cite government schemes (PM-KISAN, Soil Health Card, etc.) where relevant
-- Keep response between 100-150 words
-- Use **bold** for key points
-
-**Response Format:**
-Use clear sections with double asterisks for headings like **Recommendation:** or **Key Points:**`;
-
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ 
-            contents: [{ 
-              parts: [{ text: prompt }] 
-            }],
-            generationConfig: {
-              temperature: 0.7,
-              topK: 40,
-              topP: 0.95,
-              maxOutputTokens: 500,
-            }
-          }),
-        }
-      );
-      
-      if (!res.ok) {
-        let errorMessage = `API returned ${res.status}`;
-        try {
-          const errorData = await res.json();
-          console.error("API Error:", errorData);
-          errorMessage = errorData.error?.message || errorMessage;
-        } catch (e) {
-          console.error("Could not parse error response");
-        }
-        throw new Error(errorMessage);
-      }
-
       const data = await res.json();
-      console.log("API Response:", data);
+      console.log("Chat API Response:", data);
       
-      // Check for various response formats
-      const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || 
-                     data.candidates?.[0]?.output || 
-                     data.text;
-      
-      if (!answer) {
-        console.error("Full API response:", JSON.stringify(data, null, 2));
-        throw new Error("No valid response from API. The API key might have exceeded its quota or the model is unavailable.");
+      // Check if we should use fallback
+      if (data.fallback || data.error) {
+        console.log("Using fallback response:", data.error);
+        const fallbackResponse = getFallbackResponse(userInput, location);
+        setMessages((msgs) => [...msgs, { role: "bot", content: fallbackResponse }]);
+      } else if (data.answer && data.answer.length > 20) {
+        setMessages((msgs) => [...msgs, { role: "bot", content: data.answer }]);
+      } else {
+        // Fallback if answer too short
+        const fallbackResponse = getFallbackResponse(userInput, location);
+        setMessages((msgs) => [...msgs, { role: "bot", content: fallbackResponse }]);
       }
       
-      setMessages((msgs) => [...msgs, { role: "bot", content: answer }]);
     } catch (err) {
       console.error("Chatbot error:", err);
       
-      let errorMsg = err.message;
-      if (err.message.includes("quota") || err.message.includes("429")) {
-        errorMsg = "🚫 **API Quota Exceeded**\n\nYour Gemini API key has reached its limit.\n\n**Solutions:**\n1. Get a new API key from https://aistudio.google.com/apikey\n2. Wait for quota reset\n3. Upgrade your API plan";
-      } else if (err.message.includes("401") || err.message.includes("403")) {
-        errorMsg = "🔑 **Invalid API Key**\n\nPlease check your NEXT_PUBLIC_GEMINI_API_KEY in .env.local file";
-      }
-      
+      // Always provide helpful fallback
+      const fallbackResponse = getFallbackResponse(userInput, location);
       setMessages((msgs) => [...msgs, { 
         role: "bot", 
-        content: `❌ **Error:** ${errorMsg}` 
+        content: fallbackResponse
       }]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Fallback response function for offline/error scenarios
+  const getFallbackResponse = (query, userLocation) => {
+    const lowerQuery = query.toLowerCase();
+    
+    if (lowerQuery.includes('crop') || lowerQuery.includes('fasal')) {
+      return `**Indian Crop Recommendations${userLocation ? ` for ${userLocation}` : ''}:**
+
+**Kharif Season (Jun-Oct):** Rice, Cotton, Soybean, Maize, Groundnut
+**Rabi Season (Oct-Mar):** Wheat, Mustard, Chickpea, Barley
+
+**Tips:**
+- Check soil health card
+- Use govt schemes: PM-KISAN, PMFBY
+- Contact local Krishi Vigyan Kendra
+
+For detailed advice, visit: **mykrishimitra.gov.in**`;
+    } else if (lowerQuery.includes('weather') || lowerQuery.includes('mausam')) {
+      return `**Weather Advisory:**
+
+Check accurate weather at:
+- **IMD Website**: mausam.imd.gov.in
+- **Meghdoot App** by Govt of India
+- **AAS App** for farmers
+
+💡 Always plan farming activities based on 5-7 day forecast.`;
+    } else if (lowerQuery.includes('loan') || lowerQuery.includes('karz')) {
+      return `**Agricultural Loans:**
+
+**Kisan Credit Card (KCC):**
+- Low interest (4-7%)
+- Up to ₹3 lakh without collateral
+
+**Visit:**
+- Nearest bank branch
+- PM-KISAN portal
+- Call: 155261 (Kisan Call Center)
+
+**Documents:** Aadhaar, Land records, Bank passbook`;
+    } else {
+      return `**AgriFinAI Assistant**
+
+मैं भारतीय किसानों के लिए सहायक हूं। आप मुझसे पूछ सकते हैं:
+
+**Topics:**
+- Crop recommendations (फसल सिफारिशें)
+- Weather info (मौसम जानकारी)
+- Soil health (मिट्टी स्वास्थ्य)
+- Loans & schemes (ऋण और योजनाएं)
+- Market prices (बाजार मूल्य)
+
+**Helpline:** 155261 (Kisan Call Center)
+**Website:** farmer.gov.in`;
     }
   };
 
