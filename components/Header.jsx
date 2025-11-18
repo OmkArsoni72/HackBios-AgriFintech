@@ -12,12 +12,13 @@ const Header = () => {
      {/* Navigation Tabs */}
      <div className="hidden md:flex space-x-6">
        <Link href="/home" className="hover:text-yellow-300 font-semibold">Home</Link>
-       <Link href="/about" className="hover:text-yellow-300 font-semibold">About</Link>
-       <Link href="/marketplace" className="hover:text-yellow-300 font-semibold">Marketplace</Link>
-       <Link href="/sell" className="hover:text-yellow-300 font-semibold">Sell</Link>
+       <Link href="/weather" className="hover:text-yellow-300 font-semibold">Weather</Link>
+       <Link href="/news" className="hover:text-yellow-300 font-semibold flex items-center gap-1">
+         <span>🌾</span> News
+       </Link>
        <Link href="/loan" className="hover:text-yellow-300 font-semibold">Loan</Link>
-       <Link href="/admin/login" className="hover:text-yellow-300 font-semibold">Admin</Link>
-       <Link href="/contact" className="hover:text-yellow-300 font-semibold">Contact</Link>
+       <Link href="/soil-health" className="hover:text-yellow-300 font-semibold">Soil Health</Link>
+       <Link href="/sell" className="hover:text-yellow-300 font-semibold">Sell</Link>
      </div>
 
      {/* Search Box */}
