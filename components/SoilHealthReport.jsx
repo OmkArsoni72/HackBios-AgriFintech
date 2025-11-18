@@ -3,6 +3,34 @@ const SoilHealthReport = ({ report }) => {
 
   return (
     <div className="space-y-6">
+      {/* Image Validation Warning */}
+      {report.imageValidation && !report.imageValidation.matches && (
+        <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="font-bold text-red-800">Image Mismatch Detected</p>
+              <p className="text-red-700 text-sm mt-1">
+                Image appears to show <strong>{report.imageValidation.detected_crop}</strong>, not <strong>{report.crops}</strong>
+              </p>
+              <p className="text-red-600 text-xs mt-1">
+                Confidence: {report.imageValidation.confidence}%
+              </p>
+              {report.imageValidation.warning && (
+                <p className="text-red-700 text-sm mt-2 italic">{report.imageValidation.warning}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Image Validation Success */}
+      {report.imageValidation && report.imageValidation.matches && (
+        <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-lg">
+          <p className="text-green-800 font-semibold">✓ Image verified: {report.crops}</p>
+          <p className="text-green-600 text-xs mt-1">Confidence: {report.imageValidation.confidence}%</p>
+        </div>
+      )}
       {/* Soil Health Score */}
       <div className="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
         <p className="text-sm font-semibold text-green-700 uppercase tracking-wide">Soil Health Score</p>

@@ -16,6 +16,55 @@ export async function POST(request) {
     const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
+    // Validate image if provided
+    let imageValidation = null;
+    if (imageData) {
+      try {
+        // First validate that the image matches the crop
+        const [mimeTypePart, base64Data] = imageData.split(',');
+        const mimeType = mimeTypePart.match(/:(.*?);/)?.[1] || 'image/jpeg';
+
+        const validationPrompt = `You are an image analysis expert. Analyze this image and tell me:
+1. What crop/plant is visible in the image? (tomato, wheat, rice, potato, etc.)
+2. Does it match the claimed crop: "${cropName}"? (yes/no/uncertain)
+3. If different, what crop do you see?
+4. Rate confidence 0-100%
+
+Respond in JSON only:
+{
+  "detected_crop": "crop name",
+  "matches_claimed": true/false,
+  "confidence": 85,
+  "warning": "optional warning message"
+}`;
+
+        const validationContent = [
+          { text: validationPrompt },
+          {
+            inlineData: {
+              mimeType: mimeType,
+              data: base64Data,
+            },
+          },
+        ];
+
+        const validationResult = await model.generateContent(validationContent);
+        const validationText = validationResult.response.text();
+        
+        try {
+          const jsonMatch = validationText.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            imageValidation = JSON.parse(jsonMatch[0]);
+            console.log('Image validation:', imageValidation);
+          }
+        } catch (e) {
+          console.log('Could not parse image validation');
+        }
+      } catch (validationError) {
+        console.error('Image validation error:', validationError);
+      }
+    }
+
     // Create detailed prompt for soil analysis
     const analysisPrompt = `You are an agricultural expert. Analyze the following crop and soil information ${imageData ? 'and the uploaded image' : ''} and provide a detailed soil health assessment in JSON format.
 
@@ -24,6 +73,7 @@ Soil Type: ${soilType || 'Not specified'}
 Soil pH: ${soilPH || 'Not measured'}
 Symptoms: ${symptoms}
 Location: ${location}
+${imageValidation && !imageValidation.matches_claimed ? `\n⚠️ IMAGE MISMATCH WARNING: Image appears to show "${imageValidation.detected_crop}" not "${cropName}"` : ''}
 
 Provide a JSON response with this exact structure (no markdown, pure JSON):
 {
@@ -35,7 +85,9 @@ Provide a JSON response with this exact structure (no markdown, pure JSON):
   "recommendations": [<array of 4-5 specific recommendations>],
   "crops": "${cropName}",
   "location": "${location}",
-  "analysis": "<brief analysis of the condition>"
+  "analysis": "<brief analysis of the condition>",
+  "imageMatch": ${imageValidation ? imageValidation.matches_claimed : null},
+  "detectedCrop": "${imageValidation?.detected_crop || 'Not analyzed'}"
 }
 
 Make the values realistic based on the symptoms, soil type${imageData ? ', and the uploaded soil/plant image' : ''}. Be specific and actionable in recommendations.`;
@@ -119,7 +171,13 @@ Make the values realistic based on the symptoms, soil type${imageData ? ', and t
         : ['Monitor soil regularly', 'Maintain proper irrigation', 'Apply balanced fertilizer', 'Check pH levels'],
       crops: cropName,
       location: location,
-      analysis: analysisData.analysis || 'Soil analysis completed'
+      analysis: analysisData.analysis || 'Soil analysis completed',
+      imageValidation: imageValidation ? {
+        detected_crop: imageValidation.detected_crop,
+        matches: imageValidation.matches_claimed,
+        confidence: imageValidation.confidence,
+        warning: imageValidation.warning
+      } : null
     };
 
     return Response.json(validatedData);
