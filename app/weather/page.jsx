@@ -186,46 +186,65 @@ const WeatherPage = () => {
       
       // Find best match with intelligent matching
       const searchLower = cityName.toLowerCase().trim();
-      const searchWords = searchLower.split(/[\s,]+/); // Split by space or comma
+      const searchWords = searchLower.split(/[\s,]+/).filter(w => w.length > 0); // Split by space or comma
+      
+      console.log('🔍 Search query:', searchLower);
+      console.log('🔍 Search words:', searchWords);
+      console.log('📋 All available locations:');
+      searchResults.forEach((loc, idx) => {
+        console.log(`  ${idx + 1}. ${loc.name}, ${loc.region}, ${loc.country}`);
+      });
       
       let bestMatch = null;
       
-      // Priority 1: Exact full match (city + region/state)
-      bestMatch = searchResults.find(loc => 
-        `${loc.name}, ${loc.region}`.toLowerCase() === searchLower ||
-        `${loc.name} ${loc.region}`.toLowerCase() === searchLower
-      );
-      
-      // Priority 2: Match city name + region name appears in search
-      if (!bestMatch && searchWords.length > 1) {
+      // ONLY apply strict matching if user provided region/state (2+ words)
+      if (searchWords.length >= 2) {
         const cityWord = searchWords[0];
         const regionWords = searchWords.slice(1);
         
-        bestMatch = searchResults.find(loc => {
-          const locName = loc.name.toLowerCase();
-          const locRegion = loc.region.toLowerCase();
-          const locCountry = loc.country.toLowerCase();
-          
-          // Check if city matches and any search word matches region/state
-          return locName === cityWord && regionWords.some(word => 
-            locRegion.includes(word) || locCountry.includes(word)
-          );
-        });
-      }
-      
-      // Priority 3: Exact city name match only
-      if (!bestMatch) {
-        bestMatch = searchResults.find(loc => 
-          loc.name.toLowerCase() === searchWords[0]
+        console.log('🎯 Multi-word search detected. City:', cityWord, '| Region keywords:', regionWords);
+        
+        // Filter exact city name matches
+        const exactCityMatches = searchResults.filter(loc => 
+          loc.name.toLowerCase() === cityWord
         );
+        
+        console.log(`   Found ${exactCityMatches.length} locations with exact city name "${cityWord}"`);
+        
+        if (exactCityMatches.length > 0) {
+          // Try to match region
+          bestMatch = exactCityMatches.find(loc => {
+            const locRegion = loc.region.toLowerCase();
+            const locCountry = loc.country.toLowerCase();
+            
+            const hasMatch = regionWords.some(word => {
+              return locRegion.includes(word) || word.includes(locRegion) || 
+                     locCountry.includes(word) || word.includes(locCountry);
+            });
+            
+            if (hasMatch) {
+              console.log(`   ✓ Region match: ${loc.name}, ${loc.region}`);
+            }
+            return hasMatch;
+          });
+          
+          // If region match found, use it; otherwise use first exact city match
+          if (bestMatch) {
+            console.log('✅ Matched with region:', bestMatch.name, bestMatch.region);
+          } else {
+            bestMatch = exactCityMatches[0];
+            console.log('⚠️ No region match, using first exact city match:', bestMatch.name, bestMatch.region);
+          }
+        }
       }
       
-      // Priority 4: Use first result as fallback
+      // If no match yet (single word search OR no exact match), use first result
       if (!bestMatch) {
         bestMatch = searchResults[0];
+        console.log('✅ Using first result from API:', bestMatch.name, bestMatch.region, bestMatch.country);
       }
       
-      console.log('✅ Best match:', bestMatch.name, bestMatch.region, bestMatch.country, '(from', searchResults.length, 'results)');
+      console.log('✅ FINAL MATCH:', bestMatch.name, bestMatch.region, bestMatch.country);
       
       // Now fetch weather for the exact location using lat/lon
       const forecastUrl = `https://api.weatherapi.com/v1/forecast.json?key=${weatherApiKey}&q=${bestMatch.lat},${bestMatch.lon}&days=7&aqi=no`;
