@@ -38,10 +38,14 @@ const LoanApplicationForm = ({ bankId, loanId, loanDetails }) => {
   const handleFileUpload = (e, docType) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData(prev => ({
-        ...prev,
-        documents: [...prev.documents, { type: docType, file, preview: URL.createObjectURL(file) }]
-      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({
+          ...prev,
+          documents: [...prev.documents, { type: docType, file: reader.result, preview: reader.result }]
+        }));
+      };
+      reader.readAsDataURL(file);
     }
   };
 

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { productAPI } from "@/lib/api";
 import {
   FiArrowLeft,
   FiCamera,
@@ -76,10 +77,26 @@ export default function SellPage() {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ...files].slice(0, 5),
-    }));
+    
+    // Convert files to base64 data URLs
+    const newImages = [];
+    let processedCount = 0;
+    
+    files.slice(0, 5 - formData.images.length).forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newImages.push(reader.result);
+        processedCount++;
+        
+        if (processedCount === files.slice(0, 5 - formData.images.length).length) {
+          setFormData((prev) => ({
+            ...prev,
+            images: [...prev.images, ...newImages]
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const removeImage = (index) => {
@@ -114,12 +131,40 @@ export default function SellPage() {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Prepare data for API
+      const productData = {
+        productName: formData.productName,
+        category: formData.category,
+        quantity: Number(formData.quantity),
+        unit: formData.unit,
+        price: Number(formData.price),
+        description: formData.description,
+        location: formData.location,
+        district: formData.district,
+        state: formData.state,
+        pincode: formData.pincode,
+        contactName: formData.contactName,
+        contactPhone: formData.contactPhone,
+        contactEmail: formData.contactEmail,
+        deliveryOptions: formData.deliveryOptions,
+        organicCertified: formData.organicCertified,
+        images: formData.images // Now contains base64 data URLs
+      };
+
+      // Call API to create product
+      const response = await productAPI.create(productData);
+
+      if (response.success) {
+        setSuccess(true);
+        setTimeout(() => router.push("/"), 2500);
+      }
+    } catch (error) {
+      console.error('Error submitting product:', error);
+      alert('Failed to submit product. Please try again.');
+    } finally {
       setLoading(false);
-      setSuccess(true);
-      setTimeout(() => router.push("/"), 2500);
-    }, 2000);
+    }
   };
 
   if (success) {
@@ -355,7 +400,7 @@ export default function SellPage() {
                       {formData.images.map((img, idx) => (
                         <div key={idx} className="relative group">
                           <img
-                            src={URL.createObjectURL(img)}
+                            src={img}
                             alt={`Product ${idx + 1}`}
                             className="w-full h-20 object-cover rounded-lg"
                           />
