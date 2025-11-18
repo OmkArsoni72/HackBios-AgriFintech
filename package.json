@@ -8,6 +8,14 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "overrides": {
+    "glob": "^10.3.10",
+    "rimraf": "^5.0.5",
+    "inflight": "^2.0.0",
+    "npmlog": "^7.0.1",
+    "gauge": "^5.0.1",
+    "are-we-there-yet": "^4.0.1"
+  },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.758.0",
     "@heroicons/react": "^2.2.0",
