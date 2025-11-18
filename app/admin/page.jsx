@@ -35,7 +35,7 @@ export default function AdminPanel() {
     setLoading(true);
     try {
       // Fetch all products first, then filter on client side
-      const response = await fetch('http://localhost:5000/api/products?status=' + (filter !== "all" ? filter : ""));
+      const response = await fetch('/api/admin/products?status=' + (filter !== "all" ? filter : ""));
       const data = await response.json();
       
       if (data.success) {
@@ -44,9 +44,9 @@ export default function AdminPanel() {
         // If filter is "all", fetch from all status endpoints
         if (filter === "all") {
           const [pending, approved, rejected] = await Promise.all([
-            fetch('http://localhost:5000/api/products?status=pending').then(r => r.json()),
-            fetch('http://localhost:5000/api/products?status=approved').then(r => r.json()),
-            fetch('http://localhost:5000/api/products?status=rejected').then(r => r.json()),
+            fetch('/api/admin/products?status=pending').then(r => r.json()),
+            fetch('/api/admin/products?status=approved').then(r => r.json()),
+            fetch('/api/admin/products?status=rejected').then(r => r.json()),
           ]);
           
           allProducts = [
@@ -78,7 +78,7 @@ export default function AdminPanel() {
 
   const handleStatusUpdate = async (productId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}/status`, {
+      const response = await fetch(`/api/admin/products/${productId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export default function AdminPanel() {
   const handleDelete = async (productId) => {
     if (confirm("Are you sure you want to delete this product?")) {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+        const response = await fetch(`/api/admin/products/${productId}`, {
           method: 'DELETE',
         });
         

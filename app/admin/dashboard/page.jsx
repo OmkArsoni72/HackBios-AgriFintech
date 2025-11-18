@@ -54,7 +54,7 @@ export default function AdminDashboard() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/products?status=' + (filter !== "all" ? filter : ""));
+      const response = await fetch('/api/admin/products?status=' + (filter !== "all" ? filter : ""));
       const data = await response.json();
       
       if (data.success) {
@@ -62,9 +62,9 @@ export default function AdminDashboard() {
         
         if (filter === "all") {
           const [pending, approved, rejected] = await Promise.all([
-            fetch('http://localhost:5000/api/products?status=pending').then(r => r.json()),
-            fetch('http://localhost:5000/api/products?status=approved').then(r => r.json()),
-            fetch('http://localhost:5000/api/products?status=rejected').then(r => r.json()),
+            fetch('/api/admin/products?status=pending').then(r => r.json()),
+            fetch('/api/admin/products?status=approved').then(r => r.json()),
+            fetch('/api/admin/products?status=rejected').then(r => r.json()),
           ]);
           
           allProducts = [
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
   const fetchUsers = async () => {
     try {
       // This will fetch registered users from auth API
-      const response = await fetch('http://localhost:5000/api/auth/users');
+      const response = await fetch('/api/admin/users');
       const data = await response.json();
       
       if (data.success) {
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
 
   const handleStatusUpdate = async (productId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}/status`, {
+      const response = await fetch(`/api/admin/products/${productId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
   const handleDelete = async (productId) => {
     if (confirm("Are you sure you want to delete this product?")) {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+        const response = await fetch(`/api/admin/products/${productId}`, {
           method: 'DELETE',
         });
         
@@ -164,7 +164,7 @@ export default function AdminDashboard() {
 
   const handleDeleteProduct = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+      const response = await fetch(`/api/admin/products/${productId}`, {
         method: 'DELETE',
       });
       const data = await response.json();
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
 
   const handleDeleteUser = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/users/${userId}`, {
+      const response = await fetch(`/api/admin/users/${userId}`, {
         method: 'DELETE',
       });
       const data = await response.json();
@@ -202,7 +202,7 @@ export default function AdminDashboard() {
 
   const handleToggleUserStatus = async (userId, currentStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/auth/users/${userId}/status`, {
+      const response = await fetch(`/api/admin/users/${userId}/status`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive: !currentStatus })
