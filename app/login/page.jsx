@@ -57,33 +57,59 @@ export default function LoginRegisterPage() {
 
     try {
       if (isLogin) {
-        // Login API call
-        const response = await authAPI.login({
-          email: formData.email,
-          password: formData.password
-        });
-
-        // Store token and user data
-        if (response.success) {
-          localStorage.setItem("agrifinai_token", response.data.token);
-          localStorage.setItem("agrifinai_user", JSON.stringify(response.data.user));
+        // Mock Login (since backend is not available)
+        console.log('Login attempt:', formData.email);
+        
+        // Check if user exists in localStorage
+        const existingUsers = JSON.parse(localStorage.getItem('agrifinai_users') || '[]');
+        const user = existingUsers.find(u => u.email === formData.email && u.password === formData.password);
+        
+        if (user) {
+          // Successful login
+          const mockToken = 'mock_token_' + Date.now();
+          const userData = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: 'farmer'
+          };
+          
+          localStorage.setItem("agrifinai_token", mockToken);
+          localStorage.setItem("agrifinai_user", JSON.stringify(userData));
           
           setSuccess("Login successful! Redirecting...");
           setTimeout(() => router.push("/dashboard"), 1500);
+        } else {
+          throw new Error('Invalid email or password');
         }
       } else {
-        // Register API call
-        const response = await authAPI.register({
+        // Mock Registration (since backend is not available)
+        console.log('Registration attempt:', formData.email);
+        
+        // Get existing users from localStorage
+        const existingUsers = JSON.parse(localStorage.getItem('agrifinai_users') || '[]');
+        
+        // Check if email already exists
+        if (existingUsers.find(u => u.email === formData.email)) {
+          throw new Error('Email already registered');
+        }
+        
+        // Create new user
+        const newUser = {
+          id: 'user_' + Date.now(),
           name: formData.name,
           email: formData.email,
-          password: formData.password
-        });
-
-        if (response.success) {
-          setSuccess("Registration successful! Please login.");
-          setIsLogin(true);
-          setFormData({ name: "", email: "", password: "", confirmPassword: "" });
-        }
+          password: formData.password,
+          createdAt: new Date().toISOString()
+        };
+        
+        // Save to localStorage
+        existingUsers.push(newUser);
+        localStorage.setItem('agrifinai_users', JSON.stringify(existingUsers));
+        
+        setSuccess("Registration successful! Please login.");
+        setIsLogin(true);
+        setFormData({ name: "", email: "", password: "", confirmPassword: "" });
       }
     } catch (err) {
       setError(err.message || (isLogin ? "Login failed" : "Registration failed"));

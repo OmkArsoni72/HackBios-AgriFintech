@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request) {
   try {
     const formData = await request.json();
-    const { cropName, soilType, soilPH, symptoms, location, imageBase64 } = formData;
+    const { cropName, soilType, soilPH, symptoms, location, imageBase64, modelPrediction } = formData;
 
     const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
@@ -14,17 +14,28 @@ export async function POST(request) {
       );
     }
 
+    // If model prediction is provided, include it in the analysis
+    let modelPredictionText = '';
+    if (modelPrediction && modelPrediction.length > 0) {
+      modelPredictionText = `\n\n**🤖 AI Model Prediction Results:**
+The trained model has analyzed the uploaded image and detected:
+${modelPrediction.map((pred, idx) => `${idx + 1}. **${pred.class}** - Confidence: ${pred.percentage}%`).join('\n')}
+
+Please verify this prediction against the symptoms and provide comprehensive treatment advice.`;
+    }
+
     // Build comprehensive prompt (text-only for now due to API limitations)
     const imageNote = imageBase64 
-      ? "\n**Note:** An image was uploaded. For most accurate diagnosis, the image shows visual symptoms that should be considered along with the description."
+      ? "\n**Note:** An image was uploaded and analyzed by our AI model. The model's predictions are included below."
       : "\n**Note:** No image was provided. Diagnosis is based solely on text description. For better accuracy, farmers should upload clear photos.";
 
     const prompt = `You are an expert Indian agricultural scientist and plant pathologist. Analyze this crop health issue with precision.
 
 **IMPORTANT INSTRUCTIONS:**
 1. VERIFY if the symptoms match the stated crop type. If symptoms are unlikely for "${cropName}", mention this concern.
-2. Provide specific, actionable advice tailored to Indian farming conditions
-3. Consider the local context and climate of ${location}
+2. Consider the AI model prediction results if provided
+3. Provide specific, actionable advice tailored to Indian farming conditions
+4. Consider the local context and climate of ${location}
 
 **Farmer's Input:**
 - **Crop:** ${cropName}
@@ -33,6 +44,7 @@ export async function POST(request) {
 - **Symptoms Observed:** ${symptoms}
 - **Location:** ${location}
 ${imageNote}
+${modelPredictionText}
 
 **Your Detailed Analysis:**
 

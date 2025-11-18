@@ -83,7 +83,19 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products?status=approved');
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const response = await fetch(`${apiUrl}/products?status=approved`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        // If fetch fails or backend not available, skip
+        if (!response.ok) {
+          throw new Error('Backend not available');
+        }
+        
         const data = await response.json();
         
         if (data.success && data.data.length > 0) {
@@ -105,10 +117,14 @@ const LandingPage = () => {
           setRealProducts(transformed);
           // Mix real products with static foodItems
           setFilteredProducts([...transformed, ...foodItems]);
+        } else {
+          // Use static products if no backend data
+          setFilteredProducts(foodItems);
         }
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.log('Backend not available, using static products');
         // Fallback to static products
+        setFilteredProducts(foodItems);
       }
     };
 

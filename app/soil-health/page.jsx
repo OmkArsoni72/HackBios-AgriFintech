@@ -18,7 +18,7 @@ const SoilHealthPage = () => {
     setAnalysis(null);
 
     try {
-      // Call our backend API for image analysis
+      // Call backend API for comprehensive analysis
       const response = await fetch('/api/analyze-crop', {
         method: 'POST',
         headers: {
@@ -30,7 +30,7 @@ const SoilHealthPage = () => {
           soilPH: formData.soilPH,
           symptoms: formData.symptoms,
           location: formData.location,
-          imageBase64: formData.image // Send image as base64
+          imageBase64: formData.image
         })
       });
 
@@ -83,6 +83,7 @@ const SoilHealthPage = () => {
           
           <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100 min-h-[400px]">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">{t('Analysis Report')}</h2>
+            
             {loading && (
               <div className="flex flex-col items-center justify-center h-full">
                 <FiLoader className="animate-spin text-green-600 w-12 h-12" />
