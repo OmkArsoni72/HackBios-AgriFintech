@@ -17,9 +17,9 @@ Guidelines:
 - If question is in Hindi/regional language, respond in that language
 - Include relevant government schemes if applicable`;
 
-    // Use Gemini API
+    // Use Gemini 2.0 Flash (latest model)
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${geminiApiKey}`,
       {
         method: 'POST',
         headers: {
