@@ -4,6 +4,9 @@ export async function POST(request) {
   try {
     const body = await request.json();
     
+    console.log('Register API - Forwarding to:', `${API_BASE_URL}/auth/register`);
+    console.log('Register data:', { name: body.name, email: body.email });
+    
     const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: 'POST',
       headers: {
@@ -13,6 +16,7 @@ export async function POST(request) {
     });
 
     const data = await response.json();
+    console.log('Register response:', data);
     
     return Response.json(data, { status: response.status });
   } catch (error) {
