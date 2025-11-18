@@ -25,8 +25,13 @@ const SoilHealthForm = ({ onSubmit, loading }) => {
       const file = e.target.files[0];
       console.log('📁 File selected:', file.name, file.type, file.size);
       
-      // Store the actual File object (not base64)
-      setFormData(prev => ({ ...prev, image: file }));
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result;
+        setFormData(prev => ({ ...prev, imageData: base64String }));
+      };
+      reader.readAsDataURL(file);
       setFileName(file.name);
     }
   };

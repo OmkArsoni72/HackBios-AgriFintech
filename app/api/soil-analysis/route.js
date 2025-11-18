@@ -2,7 +2,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST(request) {
   try {
-    const { cropName, soilType, soilPH, symptoms, location } = await request.json();
+    const { cropName, soilType, soilPH, symptoms, location, imageData } = await request.json();
 
     // Validate inputs
     if (!cropName || !symptoms || !location) {
@@ -17,7 +17,7 @@ export async function POST(request) {
     const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
     // Create detailed prompt for soil analysis
-    const prompt = `You are an agricultural expert. Analyze the following crop and soil information and provide a detailed soil health assessment in JSON format.
+    const analysisPrompt = `You are an agricultural expert. Analyze the following crop and soil information ${imageData ? 'and the uploaded image' : ''} and provide a detailed soil health assessment in JSON format.
 
 Crop: ${cropName}
 Soil Type: ${soilType || 'Not specified'}
@@ -38,10 +38,28 @@ Provide a JSON response with this exact structure (no markdown, pure JSON):
   "analysis": "<brief analysis of the condition>"
 }
 
-Make the values realistic based on the symptoms and soil type. Be specific and actionable in recommendations.`;
+Make the values realistic based on the symptoms, soil type${imageData ? ', and the uploaded soil/plant image' : ''}. Be specific and actionable in recommendations.`;
+
+    // Build content for Gemini API
+    let generationContent;
+    if (imageData) {
+      // Extract base64 data from data URL
+      const base64Data = imageData.split(',')[1];
+      generationContent = [
+        { text: analysisPrompt },
+        {
+          inlineData: {
+            mimeType: 'image/jpeg',
+            data: base64Data,
+          },
+        },
+      ];
+    } else {
+      generationContent = [{ text: analysisPrompt }];
+    }
 
     // Call Gemini API
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(generationContent);
     const responseText = result.response.text();
 
     // Parse JSON response

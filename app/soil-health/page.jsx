@@ -29,6 +29,7 @@ export default function SoilHealthPage() {
           soilPH: formData.soilPH,
           symptoms: formData.symptoms,
           location: formData.location,
+          imageData: formData.imageData || null,
         }),
       });
 
