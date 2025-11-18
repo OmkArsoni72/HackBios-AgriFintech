@@ -18,9 +18,9 @@ export async function GET(request) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
-    const { userId } = params;
+    const { userId } = await context.params;
     const response = await fetch(`${API_BASE_URL}/auth/users/${userId}`, {
       method: 'DELETE',
     });
@@ -39,9 +39,9 @@ export async function DELETE(request, { params }) {
   }
 }
 
-export async function PATCH(request, { params }) {
+export async function PATCH(request, context) {
   try {
-    const { userId } = params;
+    const { userId } = await context.params;
     const body = await request.json();
     const response = await fetch(`${API_BASE_URL}/auth/users/${userId}/status`, {
       method: 'PATCH',

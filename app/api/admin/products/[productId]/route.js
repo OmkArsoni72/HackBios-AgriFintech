@@ -1,8 +1,8 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
   try {
-    const { productId } = params;
+    const { productId } = await context.params;
     const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
       method: 'DELETE',
     });
@@ -21,9 +21,9 @@ export async function DELETE(request, { params }) {
   }
 }
 
-export async function PATCH(request, { params }) {
+export async function PATCH(request, context) {
   try {
-    const { productId } = params;
+    const { productId } = await context.params;
     const body = await request.json();
     const response = await fetch(`${API_BASE_URL}/products/${productId}/status`, {
       method: 'PATCH',
