@@ -26,7 +26,7 @@ export default function AdminLogin() {
     setError("");
 
     // Simple admin credentials check (you can replace with API call)
-    if (formData.email === "admin@agrifinai.com" && formData.password === "admin123") {
+    if (formData.email === "admin@agrifin.com" && formData.password === "admin123") {
       // Store admin session
       localStorage.setItem("adminToken", "admin_logged_in");
       localStorage.setItem("adminEmail", formData.email);
@@ -72,7 +72,7 @@ export default function AdminLogin() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="admin@agrifinai.com"
+                  placeholder="admin@agrifin.com"
                   className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
@@ -137,7 +137,7 @@ export default function AdminLogin() {
           <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
             <p className="text-sm font-semibold text-blue-900 mb-2">Demo Credentials:</p>
             <p className="text-sm text-blue-700">
-              Email: <span className="font-mono">admin@agrifinai.com</span>
+              Email: <span className="font-mono">admin@agrifin.com</span>
             </p>
             <p className="text-sm text-blue-700">
               Password: <span className="font-mono">admin123</span>

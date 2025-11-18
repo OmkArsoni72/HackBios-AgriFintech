@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { FiMapPin, FiSearch, FiSun, FiDroplet, FiWind, FiCloudRain, FiThermometer, FiArrowRight } from 'react-icons/fi';
+import { FiMapPin, FiSearch, FiSun, FiDroplet, FiWind, FiCloudRain, FiThermometer } from 'react-icons/fi';
 import Link from 'next/link';
 
 // A more robust component to parse simple markdown (bold and list items)
