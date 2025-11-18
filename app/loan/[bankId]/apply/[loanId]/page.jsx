@@ -2,9 +2,10 @@ import { banks } from "../../../../loan/bankData";
 import LoanApplicationForm from "../../../../loan/LoanApplicationForm";
 import Link from "next/link";
 
-const LoanApplicationPage = ({ params }) => {
-  const bank = banks.find(b => b.id === Number(params.bankId));
-  const loan = bank?.products.find(p => p.id === Number(params.loanId));
+const LoanApplicationPage = async ({ params }) => {
+  const resolvedParams = await params;
+  const bank = banks.find(b => b.id === Number(resolvedParams.bankId));
+  const loan = bank?.products.find(p => p.id === Number(resolvedParams.loanId));
 
   if (!bank || !loan) {
     return <div className="text-center py-20">Loan product not found.</div>;

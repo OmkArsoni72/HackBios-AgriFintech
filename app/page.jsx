@@ -88,6 +88,11 @@ const LandingPage = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/products?status=approved');
+        
+        if (!response.ok) {
+          throw new Error('Backend not available');
+        }
+        
         const data = await response.json();
         
         if (data.success && data.data.length > 0) {
@@ -111,8 +116,9 @@ const LandingPage = () => {
           setFilteredProducts([...transformed, ...foodItems]);
         }
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.log('Backend not available, using static products only');
         // Fallback to static products
+        setFilteredProducts(foodItems);
       }
     };
 

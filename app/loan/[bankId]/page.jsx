@@ -2,8 +2,9 @@ import { banks } from "../bankData";
 import Link from "next/link";
 import { FiChevronRight, FiCheckCircle } from "react-icons/fi";
 
-const BankDetailPage = ({ params }) => {
-  const bank = banks.find(b => b.id === Number(params.bankId));
+const BankDetailPage = async ({ params }) => {
+  const resolvedParams = await params;
+  const bank = banks.find(b => b.id === Number(resolvedParams.bankId));
 
   if (!bank) {
     return <div className="text-center py-20">Bank not found.</div>;
