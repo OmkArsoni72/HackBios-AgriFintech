@@ -77,6 +77,11 @@ const LandingPage = () => {
   const [manualLang, setManualLang] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  
+  // News state
+  const [newsData, setNewsData] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [newsCategory, setNewsCategory] = useState('all');
 
   // Fetch approved products from backend
   useEffect(() => {
@@ -113,6 +118,39 @@ const LandingPage = () => {
 
     fetchProducts();
   }, []);
+
+  // Fetch news data
+  useEffect(() => {
+    loadNews();
+  }, [newsCategory]);
+
+  const loadNews = async () => {
+    try {
+      setNewsLoading(true);
+      const response = await fetch(`/api/farmer-news?category=${newsCategory}`);
+      const data = await response.json();
+      
+      if (data.success && data.news) {
+        setNewsData(data.news.slice(0, 6)); // Show 6 news items on home page
+      }
+    } catch (error) {
+      console.error("Error fetching news:", error);
+    } finally {
+      setNewsLoading(false);
+    }
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      agriculture: '🌱',
+      farming: '🚜',
+      crops: '🌾',
+      livestock: '🐄',
+      technology: '💻',
+      all: '📰'
+    };
+    return icons[category?.toLowerCase()] || '📰';
+  };
 
   // Initialize manualLang only on client
   useEffect(() => {
@@ -312,6 +350,9 @@ const LandingPage = () => {
               </Link>
               <Link href="/weather" className="text-gray-600 hover:text-green-700 transition">
                 {t("Weather")}
+              </Link>
+              <Link href="/news" className="text-gray-600 hover:text-green-700 transition inline-flex items-center gap-1">
+                <span>🌾</span> News
               </Link>
               <Link href="/loan" className="text-gray-600 hover:text-green-700 transition">
                 {t("Loan")}
@@ -800,6 +841,161 @@ const LandingPage = () => {
                 </Link>
               </div>
             </div>
+        </section>
+
+        {/* Farming News Section */}
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* News Header */}
+            <div className="text-center mb-14">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <span className="text-5xl">🌾</span>
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+                  {t("Latest")}{" "}
+                  <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
+                    {t("Farming News")}
+                  </span>
+                </h2>
+              </div>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                {t("Stay updated with the latest agriculture and farming news")}
+              </p>
+            </div>
+
+            {/* Category Filters */}
+            <div className="bg-gradient-to-br from-gray-50 to-green-50 rounded-2xl shadow-lg p-6 mb-10 border border-green-100">
+              <div className="flex flex-wrap gap-3 justify-center">
+                {['all', 'agriculture', 'farming', 'crops', 'livestock', 'technology'].map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setNewsCategory(category)}
+                    className={`${
+                      newsCategory === category
+                        ? 'bg-gradient-to-r from-green-600 to-emerald-500 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-green-100 hover:text-green-700'
+                    } px-5 py-2.5 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center gap-2 text-sm border border-gray-200`}
+                  >
+                    <span className="text-xl">{getCategoryIcon(category)}</span>
+                    <span className="capitalize">{t(category)}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* News Loading State */}
+            {newsLoading && (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-green-600"></div>
+                <p className="text-gray-600 mt-4 text-lg">{t("Loading farming news...")}</p>
+              </div>
+            )}
+
+            {/* News Grid */}
+            {!newsLoading && newsData.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {newsData.map((news, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-green-300 group"
+                    >
+                      {/* News Image or Icon Placeholder */}
+                      {news.image ? (
+                        <div className="relative h-48 overflow-hidden">
+                          <img 
+                            src={news.image} 
+                            alt={news.title}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                          <div 
+                            className="h-48 bg-gradient-to-br from-green-400 to-emerald-500 hidden items-center justify-center"
+                            style={{display: 'none'}}
+                          >
+                            <span className="text-8xl">{getCategoryIcon(news.category)}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="h-48 bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                          <span className="text-8xl">{getCategoryIcon(news.category)}</span>
+                        </div>
+                      )}
+
+                      <div className="p-6">
+                        {/* Category Badge */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold capitalize inline-flex items-center gap-1">
+                            <span>{getCategoryIcon(news.category)}</span>
+                            {news.category || 'Farming'}
+                          </span>
+                          {new Date(news.date) > new Date(Date.now() - 48 * 60 * 60 * 1000) && (
+                            <span className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
+                              NEW
+                            </span>
+                          )}
+                        </div>
+
+                        {/* News Title */}
+                        <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-green-600 transition-colors">
+                          {news.title}
+                        </h3>
+
+                        {/* News Description */}
+                        <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                          {news.description}
+                        </p>
+
+                        {/* News Meta */}
+                        <div className="flex items-center justify-between text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+                          <span className="font-semibold">{news.source}</span>
+                          <span>{new Date(news.date).toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}</span>
+                        </div>
+
+                        {/* Read More Button */}
+                        {news.link && (
+                          <a
+                            href={news.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-green-600 to-emerald-500 text-white px-4 py-2.5 rounded-xl hover:shadow-lg transition-all font-semibold text-sm"
+                          >
+                            {t("Read Full Story")} <FiArrowRight className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* View All News Button */}
+                <div className="text-center mt-12">
+                  <Link
+                    href="/news"
+                    className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105"
+                  >
+                    <span>🌾</span>
+                    {t("View All Farming News")}
+                    <FiArrowRight className="w-5 h-5" />
+                  </Link>
+                </div>
+              </>
+            )}
+
+            {/* No News State */}
+            {!newsLoading && newsData.length === 0 && (
+              <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-green-50 rounded-2xl border border-green-100">
+                <div className="text-7xl mb-4">🌾</div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">{t("No News Available")}</h3>
+                <p className="text-gray-600">{t("Check back soon for the latest farming updates!")}</p>
+              </div>
+            )}
+          </div>
         </section>
       </main>
 
