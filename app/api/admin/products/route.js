@@ -1,5 +1,3 @@
-import { fetch as serverFetch } from 'node-fetch';
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
 export async function GET(request) {
