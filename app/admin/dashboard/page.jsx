@@ -49,7 +49,7 @@ export default function AdminDashboard() {
 
     fetchProducts();
     fetchUsers();
-  }, [filter]);
+  }, [filter, router]);
 
   const fetchProducts = async () => {
     setLoading(true);

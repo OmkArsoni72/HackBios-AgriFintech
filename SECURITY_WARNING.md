@@ -30,8 +30,7 @@ Your `.env` file with sensitive credentials was previously committed to the repo
 □ Change Gmail password
 □ Regenerate Gemini API key
 □ Regenerate OpenWeather API key
-□ Generate new JWT_SECRET for backend
-□ Generate new NEXTAUTH_SECRET for frontend
+□ Generate new JWT_SECRET (currently: e48287ee414c33752df93edf85ab1594)
 ```
 
 ### Step 2: Create Local `.env` File (DO NOT COMMIT!)
@@ -41,8 +40,9 @@ Create a new `.env` file in your project root with **NEW** credentials:
 ```env
 # Frontend Environment Variables
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
-NEXTAUTH_SECRET=[NEW 32-character random string]
-NEXTAUTH_URL=http://localhost:3000
+
+# JWT Secret (must match backend)
+JWT_SECRET=[NEW 32-character random string]
 
 # NEW API Keys (after rotation)
 NEXT_PUBLIC_OPENWEATHER_API_KEY=[your new key]
@@ -82,10 +82,11 @@ FRONTEND_URL = [Your frontend Vercel URL]
 #### For Frontend Project (root):
 ```
 NEXT_PUBLIC_API_URL = https://your-backend.vercel.app/api
-NEXTAUTH_SECRET = [32 random characters - different from JWT]
-NEXTAUTH_URL = https://your-frontend.vercel.app
+JWT_SECRET = [32 random characters - same as backend]
 NEXT_PUBLIC_OPENWEATHER_API_KEY = [new key]
 NEXT_PUBLIC_GEMINI_API_KEY = [new key]
+EMAIL_USER = omkarsoni7277@gmail.com
+EMAIL_PASS = [your app password]
 ```
 
 ### Step 5: Deploy to Vercel

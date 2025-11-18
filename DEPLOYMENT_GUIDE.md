@@ -140,8 +140,11 @@ Click **"Environment Variables"** aur add karo:
 | Name | Value |
 |------|-------|
 | `NEXT_PUBLIC_API_URL` | Your backend URL + `/api` (e.g., `https://agrifin-backend.vercel.app/api`) |
-| `NEXTAUTH_SECRET` | Generate strong secret (same tool ya different) |
-| `NEXTAUTH_URL` | Your frontend Vercel URL (first deploy ke baad update karenge) |
+| `JWT_SECRET` | Same secret as backend JWT_SECRET (for authentication) |
+| `NEXT_PUBLIC_OPENWEATHER_API_KEY` | Your OpenWeather API key |
+| `NEXT_PUBLIC_GEMINI_API_KEY` | Your Gemini API key |
+| `EMAIL_USER` | Your Gmail address |
+| `EMAIL_PASS` | Your Gmail App Password |
 
 ### 3. Deploy
 1. Click **"Deploy"**

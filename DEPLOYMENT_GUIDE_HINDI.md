@@ -213,8 +213,11 @@ Ye aapki actual website hai jo users dekhenge.
    | Name | Value |
    |------|-------|
    | `NEXT_PUBLIC_API_URL` | Backend URL + `/api` add karke (Example: `https://agrifin-backend-abc123.vercel.app/api`) |
-   | `NEXTAUTH_SECRET` | Ek aur 32 random characters (backend wale se DIFFERENT!) |
-   | `NEXTAUTH_URL` | Abhi **khali chhod do** - baad mein add karenge |
+   | `JWT_SECRET` | Backend wali WAHI JWT_SECRET (same honi chahiye!) |
+   | `NEXT_PUBLIC_OPENWEATHER_API_KEY` | Apni OpenWeather API key |
+   | `NEXT_PUBLIC_GEMINI_API_KEY` | Apni Gemini API key |
+   | `EMAIL_USER` | Apna Gmail address |
+   | `EMAIL_PASS` | Gmail App Password |
 
    **Dhyan se**: `NEXT_PUBLIC_API_URL` mein backend URL ke end mein `/api` zaroor lagao!
 
