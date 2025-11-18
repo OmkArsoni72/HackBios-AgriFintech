@@ -17,28 +17,30 @@ export default function SoilHealthPage() {
     setError('');
     
     try {
-      // Simulate soil health analysis
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockAnalysis = {
-        soilHealth: Math.round(Math.random() * 40 + 60), // 60-100
-        pH: parseFloat((Math.random() * 2 + 6).toFixed(1)), // 6-8
-        nitrogen: Math.round(Math.random() * 200 + 100), // 100-300 mg/kg
-        phosphorus: Math.round(Math.random() * 100 + 20), // 20-120 mg/kg
-        potassium: Math.round(Math.random() * 300 + 100), // 100-400 mg/kg
-        recommendations: [
-          'Apply nitrogen-rich fertilizer for better crop yield',
-          'Increase organic matter through composting',
-          'Maintain soil pH between 6.5-7.5 for optimal growth',
-          'Implement crop rotation to prevent nutrient depletion'
-        ],
-        crops: formData.cropName,
-        location: formData.location
-      };
-      
-      setAnalysis(mockAnalysis);
+      // Call Gemini API for soil health analysis
+      const response = await fetch('/api/soil-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cropName: formData.cropName,
+          soilType: formData.soilType,
+          soilPH: formData.soilPH,
+          symptoms: formData.symptoms,
+          location: formData.location,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to analyze soil health');
+      }
+
+      const data = await response.json();
+      setAnalysis(data);
     } catch (err) {
-      setError('Failed to analyze soil health. Please try again.');
+      setError(err.message || 'Failed to analyze soil health. Please try again.');
       console.error('Analysis error:', err);
     } finally {
       setLoading(false);

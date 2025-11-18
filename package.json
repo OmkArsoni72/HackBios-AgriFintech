@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/s3-request-presigner": "^3.758.0",
+    "@google/generative-ai": "^0.24.1",
     "@heroicons/react": "^2.2.0",
     "@iconify/react": "^5.2.0",
     "@mantine/core": "^7.17.1",
