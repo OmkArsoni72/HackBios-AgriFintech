@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { assets } from "@/assets/assets";
 import { useState } from "react";
-import { Menu, X } from "react-icons/fa6";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -110,7 +110,7 @@ const Header = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden text-3xl p-2.5 hover:bg-gray-100 rounded-xl transition-colors duration-300 text-gray-800"
             >
-              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              {isMenuOpen ? <FaTimes size={28} /> : <FaBars size={28} />}
             </button>
           </div>
         </div>
