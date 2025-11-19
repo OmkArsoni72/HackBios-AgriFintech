@@ -3,9 +3,10 @@
 > next build
 
    ▲ Next.js 15.5.6
+   - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 11.3s
+ ✓ Compiled successfully in 5.9s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/33) ...
@@ -17,12 +18,12 @@
    Collecting build traces ...
 
 Route (app)                                    Size  First Load JS
-┌ ○ /                                       6.95 kB         151 kB
+┌ ○ /                                       7.01 kB         151 kB
 ├ ○ /_not-found                               993 B         103 kB
 ├ ○ /about                                    176 B         111 kB
-├ ○ /admin                                  4.56 kB         109 kB
-├ ○ /admin/dashboard                         5.5 kB         114 kB
-├ ○ /admin/login                            2.61 kB         111 kB
+├ ○ /admin                                  4.53 kB         109 kB
+├ ○ /admin/dashboard                        5.53 kB         113 kB
+├ ○ /admin/login                            2.61 kB         110 kB
 ├ ƒ /api/admin/products                       166 B         102 kB
 ├ ƒ /api/admin/products/[productId]           166 B         102 kB
 ├ ƒ /api/admin/products/[productId]/status    166 B         102 kB
@@ -36,25 +37,25 @@ Route (app)                                    Size  First Load JS
 ├ ƒ /api/send-inquiry                         166 B         102 kB
 ├ ƒ /api/soil-analysis                        166 B         102 kB
 ├ ○ /contact                                  169 B         105 kB
-├ ○ /dashboard                              3.16 kB         111 kB
+├ ○ /dashboard                              2.55 kB         110 kB
 ├ ○ /faq                                    2.35 kB         110 kB
-├ ○ /farmers                                 2.7 kB         108 kB
+├ ○ /farmers                                2.67 kB         108 kB
 ├ ƒ /foods/[id]                             5.96 kB         113 kB
-├ ○ /home                                   5.69 kB         150 kB
+├ ○ /home                                   5.17 kB         149 kB
 ├ ƒ /inquiry/[id]                           6.65 kB         120 kB
 ├ ○ /loan                                     169 B         105 kB
 ├ ƒ /loan/[bankId]                            169 B         105 kB
 ├ ƒ /loan/[bankId]/apply/[loanId]           2.95 kB         108 kB
-├ ○ /login                                  4.98 kB         113 kB
-├ ○ /marketplace                            3.92 kB         109 kB
+├ ○ /login                                  4.94 kB         113 kB
+├ ○ /marketplace                            3.89 kB         108 kB
 ├ ○ /news                                   3.16 kB         108 kB
 ├ ○ /privacy                                  166 B         102 kB
 ├ ƒ /products/[id]                          3.08 kB         116 kB
-├ ○ /profile                                3.41 kB         112 kB
-├ ○ /sell                                   5.58 kB         114 kB
-├ ○ /soil-health                            3.33 kB         111 kB
+├ ○ /profile                                3.13 kB         111 kB
+├ ○ /sell                                   5.58 kB         113 kB
+├ ○ /soil-health                            3.34 kB         111 kB
 ├ ○ /terms                                    166 B         102 kB
-└ ○ /weather                                5.87 kB         111 kB
+└ ○ /weather                                5.75 kB         110 kB
 + First Load JS shared by all                102 kB
   ├ chunks/1795-034629a707c6c4a3.js         45.6 kB
   ├ chunks/2cc631f5-076a5eaedac626e3.js     54.2 kB
