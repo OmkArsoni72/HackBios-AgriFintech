@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "buildCommand": "turbo run build",
-  "outputDirectory": "apps/web/.next"
+  "buildCommand": "next build",
+  "outputDirectory": ".next"
 }

@@ -6,7 +6,7 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 5.9s
+ ✓ Compiled successfully in 6.8s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/33) ...
@@ -50,7 +50,7 @@ Route (app)                                    Size  First Load JS
 ├ ○ /marketplace                            3.89 kB         108 kB
 ├ ○ /news                                   3.16 kB         108 kB
 ├ ○ /privacy                                  166 B         102 kB
-├ ƒ /products/[id]                          3.08 kB         116 kB
+├ ƒ /products/[id]                          3.06 kB         116 kB
 ├ ○ /profile                                3.13 kB         111 kB
 ├ ○ /sell                                   5.58 kB         113 kB
 ├ ○ /soil-health                            3.34 kB         111 kB

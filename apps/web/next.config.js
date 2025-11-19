@@ -1,22 +1,6 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
-
 const nextConfig = {
   reactStrictMode: true,
-  outputFileTracingRoot: path.join(__dirname, '../../'),
-  
-  webpack: (config) => {
-    config.infrastructureLogging = { level: 'error' };
-    
-    // Ensure @ alias resolves to apps/web directory
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname),
-    };
-    
-    return config;
-  },
-  
   images: {
     domains: [
       'wordzz.com',
