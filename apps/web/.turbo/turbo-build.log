@@ -6,7 +6,7 @@
    - Environments: .env.local
 
    Creating an optimized production build ...
- ✓ Compiled successfully in 6.8s
+ ✓ Compiled successfully in 5.0s
    Linting and checking validity of types ...
    Collecting page data ...
    Generating static pages (0/33) ...
@@ -18,7 +18,7 @@
    Collecting build traces ...
 
 Route (app)                                    Size  First Load JS
-┌ ○ /                                       7.01 kB         151 kB
+┌ ○ /                                       7.01 kB         150 kB
 ├ ○ /_not-found                               993 B         103 kB
 ├ ○ /about                                    176 B         111 kB
 ├ ○ /admin                                  4.53 kB         109 kB
@@ -40,9 +40,9 @@ Route (app)                                    Size  First Load JS
 ├ ○ /dashboard                              2.55 kB         110 kB
 ├ ○ /faq                                    2.35 kB         110 kB
 ├ ○ /farmers                                2.67 kB         108 kB
-├ ƒ /foods/[id]                             5.96 kB         113 kB
-├ ○ /home                                   5.17 kB         149 kB
-├ ƒ /inquiry/[id]                           6.65 kB         120 kB
+├ ƒ /foods/[id]                             5.33 kB         112 kB
+├ ○ /home                                   5.17 kB         148 kB
+├ ƒ /inquiry/[id]                           6.11 kB         119 kB
 ├ ○ /loan                                     169 B         105 kB
 ├ ƒ /loan/[bankId]                            169 B         105 kB
 ├ ƒ /loan/[bankId]/apply/[loanId]           2.95 kB         108 kB
@@ -50,7 +50,7 @@ Route (app)                                    Size  First Load JS
 ├ ○ /marketplace                            3.89 kB         108 kB
 ├ ○ /news                                   3.16 kB         108 kB
 ├ ○ /privacy                                  166 B         102 kB
-├ ƒ /products/[id]                          3.06 kB         116 kB
+├ ƒ /products/[id]                          3.08 kB         116 kB
 ├ ○ /profile                                3.13 kB         111 kB
 ├ ○ /sell                                   5.58 kB         113 kB
 ├ ○ /soil-health                            3.34 kB         111 kB

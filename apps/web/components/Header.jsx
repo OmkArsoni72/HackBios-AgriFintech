@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { assets } from "@/assets/assets";
+import { assets } from "@/assets";
 import { useState, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
