@@ -18,5 +18,8 @@
     "turbo": "^1.10.0",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@8.0.0"
+  "packageManager": "pnpm@8.0.0",
+  "dependencies": {
+    "next": "^15.5.2"
+  }
 }
