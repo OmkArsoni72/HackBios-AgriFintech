@@ -14,7 +14,6 @@
     "packages/*"
   ],
   "devDependencies": {
-    "next": "^15.5.2",
     "prettier": "^3.0.0",
     "turbo": "^1.10.0",
     "typescript": "^5.9.3"
