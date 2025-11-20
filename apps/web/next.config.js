@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -36,6 +38,15 @@ const nextConfig = {
       'www.bharatfinancial.com',
       'media.licdn.com'
     ],
+  },
+  webpack: (config) => {
+    // Keep alias simple and Vercel friendly
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': path.resolve(__dirname),
+    };
+
+    return config;
   },
 };
 
