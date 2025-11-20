@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
 import ProductImage from "../components/ProductImage";
-import { foodItems } from "../assets/assets";
+import { foodItems } from "../data/foodItems";
 import {
   FiX,
   FiSearch,

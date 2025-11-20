@@ -1,5 +1,5 @@
 import React from 'react'
-import { foodItems } from '@/assets/assets'
+import { foodItems } from '@/data/foodItems'
 import FoodCard from './FoodCard'
 
 const ProductList = () => {

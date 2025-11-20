@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import { useParams } from 'next/navigation';
-import { foodItems } from '@/assets/assets';
+import { foodItems } from '@/data/foodItems';
 import Image from 'next/image';
 import { FaCartPlus } from "react-icons/fa6";
 import { IoBagCheckOutline } from "react-icons/io5";

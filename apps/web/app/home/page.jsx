@@ -10,7 +10,7 @@ import {
   FiAward, FiShield, FiClock, FiPhone, FiMail
 } from "react-icons/fi";
 import ProductImage from '@/components/ProductImage';
-import { foodItems } from '@/assets/assets';
+import { foodItems } from '@/data/foodItems';
 import '@/i18n';
 
 const HomePage = () => {

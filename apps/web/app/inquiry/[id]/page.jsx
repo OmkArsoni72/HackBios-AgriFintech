@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { FiArrowLeft, FiMail, FiPhone, FiMapPin, FiStar, FiCheckCircle } from "react-icons/fi";
-import { foodItems } from "@/assets/assets";
+import { foodItems } from "@/data/foodItems";
 import ProductImage from "@/components/ProductImage";
 
 const InquiryPage = () => {
