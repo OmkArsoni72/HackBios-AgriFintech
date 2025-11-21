@@ -41,6 +41,10 @@ export default function ProfilePage() {
       localStorage.removeItem("agrifinai_user");
       localStorage.removeItem("agrifinai_token");
       setUser(null);
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('userLogout'));
+      // Redirect to home page
+      router.push("/");
     }
   };
 

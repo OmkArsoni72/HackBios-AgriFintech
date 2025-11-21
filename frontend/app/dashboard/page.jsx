@@ -26,28 +26,27 @@ export default function DashboardPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const user = localStorage.getItem("agrifinai_user");
-      if (!user) {
+      const token = localStorage.getItem("agrifinai_token");
+      
+      if (!user || !token) {
         router.push("/login");
-      } else {
-        setUserData(JSON.parse(user));
+        return;
       }
+      
+      setUserData(JSON.parse(user));
     }
   }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("agrifinai_user");
+    localStorage.removeItem("agrifinai_token");
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('userLogout'));
     router.push("/");
   };
 
   if (!userData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return null; // Don't show loading, just redirect
   }
 
   const stats = [

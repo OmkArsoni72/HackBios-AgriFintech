@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { productAPI } from "@/lib/api";
@@ -12,10 +12,14 @@ import {
   FiTruck,
   FiCheckCircle,
   FiAlertCircle,
+  FiLock,
+  FiUser,
 } from "react-icons/fi";
 
 export default function SellPage() {
   const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     productName: "",
@@ -35,8 +39,98 @@ export default function SellPage() {
     organicCertified: false,
     images: [],
   });
-  const [loading, setLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const storedUser = localStorage.getItem("agrifinai_user");
+        const storedToken = localStorage.getItem("agrifinai_token");
+
+        if (storedUser && storedToken) {
+          setUser(JSON.parse(storedUser));
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Auth check error:", error);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+
+    // Listen for storage changes (logout from another tab)
+    const handleStorageChange = (e) => {
+      if (e.key === 'agrifinai_user' || e.key === 'agrifinai_token') {
+        checkAuth();
+      }
+    };
+
+    // Listen for custom logout event
+    const handleLogout = () => {
+      setUser(null);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userLogout', handleLogout);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userLogout', handleLogout);
+    };
+  }, []);
+
+  // Show loading while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading AgriFinAI...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show authentication required if not logged in
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center px-4">
+        <div className="max-w-md w-full text-center">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-green-100">
+            <div className="w-20 h-20 bg-linear-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FiLock className="w-12 h-12 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">
+              Authentication Required
+            </h2>
+            <p className="text-gray-600 mb-6">
+              You need to login to sell products on AgriFinAI. Please login to continue.
+            </p>
+            <div className="space-y-3">
+              <Link
+                href="/login"
+                className="inline-block w-full px-6 py-3 bg-linear-to-r from-green-600 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              >
+                <FiUser className="inline mr-2" />
+                Login Now
+              </Link>
+              <p className="text-sm text-gray-500">
+                Don't have an account?{" "}
+                <Link href="/login" className="text-green-600 hover:text-green-700 font-medium">
+                  Register here
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const categories = [
     "Vegetables",
@@ -172,7 +266,7 @@ export default function SellPage() {
       return;
     }
     
-    setLoading(true);
+    setLoadingSubmit(true);
 
     try {
       // Prepare data for API
@@ -208,13 +302,13 @@ export default function SellPage() {
       console.error('Error submitting product:', error);
       alert('Failed to submit product. Please try again.');
     } finally {
-      setLoading(false);
+      setLoadingSubmit(false);
     }
   };
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center px-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-green-100">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -229,7 +323,7 @@ export default function SellPage() {
             </p>
             <Link
               href="/"
-              className="inline-block px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
+              className="inline-block px-6 py-3 bg-linear-to-r from-green-600 to-emerald-500 text-white rounded-xl font-semibold hover:shadow-lg transition"
             >
               Back to Home
             </Link>
@@ -240,7 +334,7 @@ export default function SellPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -253,7 +347,7 @@ export default function SellPage() {
           </Link>
 
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-14 h-14 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg text-white font-bold text-2xl">
+            <div className="w-14 h-14 bg-linear-to-r from-green-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg text-white font-bold text-2xl">
               A
             </div>
             <div>
@@ -687,7 +781,7 @@ export default function SellPage() {
                 </div>
 
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
-                  <FiAlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <FiAlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                   <p className="text-sm text-blue-800">
                     Your listing will be reviewed by our team and published within 24 hours. You'll
                     receive notifications when buyers express interest.
@@ -712,17 +806,17 @@ export default function SellPage() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="ml-auto px-6 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition"
+                  className="ml-auto px-6 py-3 rounded-xl bg-linear-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition"
                 >
                   Next Step
                 </button>
               ) : (
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="ml-auto px-6 py-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition disabled:opacity-50 flex items-center gap-2"
+                  disabled={loadingSubmit}
+                  className="ml-auto px-6 py-3 rounded-xl bg-linear-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition disabled:opacity-50 flex items-center gap-2"
                 >
-                  {loading ? (
+                  {loadingSubmit ? (
                     <>
                       <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
                         <circle

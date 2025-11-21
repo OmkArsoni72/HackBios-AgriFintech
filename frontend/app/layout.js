@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import AuthWrapper from "@/components/AuthWrapper";
 import GeminiChatbot from "./components/GeminiChatbot";
 
 const geistSans = Geist({
@@ -39,7 +40,9 @@ export default function RootLayout({ children }) {
           }}
         />
         <Header />
-        <main>{children}</main>
+        <AuthWrapper>
+          <main>{children}</main>
+        </AuthWrapper>
         <GeminiChatbot />
       </body>
     </html>

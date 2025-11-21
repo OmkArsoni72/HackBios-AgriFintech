@@ -26,9 +26,25 @@ const Header = () => {
     checkUser();
     
     // Listen for storage changes (logout from another tab)
-    window.addEventListener('storage', checkUser);
+    const handleStorageChange = (e) => {
+      if (e.key === 'agrifinai_user' || e.key === 'agrifinai_token') {
+        checkUser();
+      }
+    };
     
-    return () => window.removeEventListener('storage', checkUser);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom logout event
+    const handleLogout = () => {
+      setUser(null);
+    };
+    
+    window.addEventListener('userLogout', handleLogout);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userLogout', handleLogout);
+    };
   }, []);
 
   const navItems = [
@@ -48,7 +64,7 @@ const Header = () => {
             
             {/* Logo Section */}
             <Link href="/home" className="flex items-center flex-shrink-0 gap-3 transition-opacity duration-300 group hover:opacity-90">
-              <div className="bg-gradient-to-br from-green-500 via-green-600 to-green-700 text-white rounded-2xl p-2.5 font-bold text-2xl w-14 h-14 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="bg-linear-to-br from-green-500 via-green-600 to-green-700 text-white rounded-2xl p-2.5 font-bold text-2xl w-14 h-14 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 A
               </div>
               <div className="flex-col hidden sm:flex">
@@ -59,23 +75,25 @@ const Header = () => {
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="items-center flex-1 hidden gap-8 ml-12 lg:flex">
-              {navItems.map((item, index) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-2 px-0 py-2.5 text-gray-700 font-bold text-sm rounded-xl hover:text-green-700 hover:bg-green-50 transition-all duration-300 group relative whitespace-nowrap"
-                >
-                  <span className="text-xl transition-transform duration-300 group-hover:scale-125">{item.icon}</span>
-                  <span className="hidden md:inline">{item.label}</span>
-                  <span className="absolute bottom-0 left-0 w-0 h-1 transition-all duration-300 rounded-full bg-gradient-to-r from-green-500 to-green-600 group-hover:w-full"></span>
-                </Link>
-              ))}
-            </div>
+            {/* Desktop Navigation - Only show when logged in */}
+            {user && (
+              <div className="items-center flex-1 hidden gap-8 ml-12 lg:flex">
+                {navItems.map((item, index) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-2 px-0 py-2.5 text-gray-700 font-bold text-sm rounded-xl hover:text-green-700 hover:bg-green-50 transition-all duration-300 group relative whitespace-nowrap"
+                  >
+                    <span className="text-xl transition-transform duration-300 group-hover:scale-125">{item.icon}</span>
+                    <span className="hidden md:inline">{item.label}</span>
+                    <span className="absolute bottom-0 left-0 w-0 h-1 transition-all duration-300 rounded-full bg-linear-to-r from-green-500 to-green-600 group-hover:w-full"></span>
+                  </Link>
+                ))}
+              </div>
+            )}
 
             {/* Right Actions */}
-            <div className="items-center flex-shrink-0 hidden gap-4 ml-6 lg:flex">
+            <div className="items-center shrink-0 hidden gap-4 ml-6 lg:flex">
               {/* Admin Button */}
               <Link
                 href="/admin/dashboard"
@@ -85,14 +103,16 @@ const Header = () => {
                 <span>Admin</span>
               </Link>
 
-              {/* Sell Button */}
-              <Link
-                href="/sell"
-                className="flex items-center gap-2 py-3 text-sm font-bold text-white transition-all duration-300 transform shadow-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 px-7 rounded-xl hover:shadow-xl hover:scale-105 group"
-              >
-                <span>🚀</span>
-                <span>Sell</span>
-              </Link>
+              {/* Sell Button - Only show when logged in */}
+              {user && (
+                <Link
+                  href="/sell"
+                  className="flex items-center gap-2 py-3 text-sm font-bold text-white transition-all duration-300 transform shadow-lg bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 px-7 rounded-xl hover:shadow-xl hover:scale-105 group"
+                >
+                  <span>🚀</span>
+                  <span>Sell</span>
+                </Link>
+              )}
 
               {/* Theme Toggle */}
               <button className="px-5 py-3 text-lg font-bold text-gray-800 transition-all duration-300 bg-gray-100 border-2 border-gray-300 hover:bg-gray-200 rounded-xl hover:border-green-400 hover:text-green-600">
@@ -126,7 +146,7 @@ const Header = () => {
               ) : (
                 <Link
                   href="/login"
-                  className="px-6 py-3 font-bold text-white transition-all duration-300 shadow-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-xl"
+                  className="px-6 py-3 font-bold text-white transition-all duration-300 shadow-lg bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-xl"
                 >
                   Login
                 </Link>
@@ -148,7 +168,8 @@ const Header = () => {
       {isMenuOpen && (
         <div className="bg-white border-b-2 border-green-100 shadow-lg lg:hidden">
           <div className="px-6 py-6 space-y-3">
-            {navItems.map((item) => (
+            {/* Navigation items - Only show when logged in */}
+            {user && navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -171,15 +192,17 @@ const Header = () => {
                 <span>Admin Panel</span>
               </Link>
 
-              {/* Sell Button Mobile */}
-              <Link
-                href="/sell"
-                className="flex items-center justify-center gap-2 px-5 py-4 font-bold text-white transition-all duration-300 shadow-md bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <span>🚀</span>
-                <span>Sell Product</span>
-              </Link>
+              {/* Sell Button Mobile - Only show when logged in */}
+              {user && (
+                <Link
+                  href="/sell"
+                  className="flex items-center justify-center gap-2 px-5 py-4 font-bold text-white transition-all duration-300 shadow-md bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span>🚀</span>
+                  <span>Sell Product</span>
+                </Link>
+              )}
 
               {/* Profile Mobile - Only show when logged in */}
               {user ? (
