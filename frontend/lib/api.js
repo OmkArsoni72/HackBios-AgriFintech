@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hack-bios-agri-fintech-backend.vercel.app';
 
 // Get auth token from localStorage
 const getAuthToken = () => {
@@ -180,7 +180,7 @@ export const productAPI = {
 // Health check
 const healthCheck = async () => {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://hack-bios-agri-fintech-backend.vercel.app';
     const response = await fetch(`${apiUrl}/health`);
     return await response.json();
   } catch (error) {
