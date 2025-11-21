@@ -355,20 +355,20 @@ Weather data: ${JSON.stringify(forecast)}
       <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         {/* Search Section */}
         <section className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Weather & Crop Advisory</h1>
-          <p className="text-gray-600 mb-6">Get real-time weather forecasts and AI-powered farming recommendations.</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Weather & Farming Advisory</h1>
+          <p className="text-gray-600 mb-6">Get real-time weather forecasts and AI-powered farming recommendations for better crop planning.</p>
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-grow">
-              <FiMapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <FiMapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
-                placeholder="Enter city name (e.g., Durg, Mumbai, Delhi)..."
+                placeholder="Enter city name (e.g., Mumbai, Delhi, Pune)..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
               />
-              <p className="text-xs text-gray-500 mt-1 ml-12">
-                💡 Tip: Use full city name for accurate results. Try "Durg, Chhattisgarh" instead of just "Durg"
+              <p className="text-xs text-gray-500 mt-1 ml-10">
+                💡 For accurate results, include state name (e.g., "Durg, Chhattisgarh")
               </p>
             </div>
             <button

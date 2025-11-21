@@ -172,8 +172,10 @@ Check accurate weather at:
         <span className="text-xl">💬</span>
       </button>
       {open && (
-        <div className="fixed bottom-24 right-6 bg-white rounded-2xl shadow-2xl w-96 h-[32rem] flex flex-col z-50 border border-green-600">
-          <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-green-100 to-green-200 rounded-t-2xl">
+        <div className="fixed bg-white shadow-2xl flex flex-col z-50 border border-green-600 
+                        w-full h-full bottom-0 right-0 rounded-none 
+                        md:w-96 md:h-[32rem] md:bottom-24 md:right-6 md:rounded-2xl">
+          <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-green-100 to-green-200 rounded-t-2xl md:rounded-t-2xl">
             <span className="font-bold text-green-700 text-lg">AgriConnect AI Chatbot</span>
             <button onClick={() => setOpen(false)} className="text-gray-500 hover:text-red-500 text-xl">✖️</button>
           </div>
