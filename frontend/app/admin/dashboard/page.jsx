@@ -258,21 +258,21 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-            <p className="text-gray-600">Manage products, users, and platform settings</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+            <p className="text-gray-600 text-sm sm:text-base">Manage products, users, and platform settings</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <Link
               href="/"
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition text-center"
             >
               View Site
             </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition"
             >
               <FiLogOut className="w-4 h-4" />
               Logout
@@ -281,7 +281,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
             <div className="flex items-center justify-between">
               <div>
@@ -345,27 +345,27 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="bg-white rounded-xl shadow-lg mb-6 border border-gray-200">
-          <div className="flex border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row border-b border-gray-200">
             <button
               onClick={() => setActiveTab("products")}
-              className={`flex-1 px-6 py-4 font-semibold transition ${
+              className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-semibold transition text-sm sm:text-base ${
                 activeTab === "products"
                   ? "text-blue-600 border-b-2 border-blue-600"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <FiPackage className="inline w-5 h-5 mr-2" />
+              <FiPackage className="inline w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Products Management
             </button>
             <button
               onClick={() => setActiveTab("users")}
-              className={`flex-1 px-6 py-4 font-semibold transition ${
+              className={`flex-1 px-4 sm:px-6 py-3 sm:py-4 font-semibold transition text-sm sm:text-base ${
                 activeTab === "users"
                   ? "text-blue-600 border-b-2 border-blue-600"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >
-              <FiUsers className="inline w-5 h-5 mr-2" />
+              <FiUsers className="inline w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Users & Registrations
             </button>
           </div>
@@ -374,16 +374,18 @@ export default function AdminDashboard() {
           {activeTab === "products" && (
             <div className="p-6">
               {/* Filters */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <FiFilter className="w-5 h-5 text-gray-600" />
-                  <span className="font-semibold text-gray-700">Filter:</span>
-                  <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+                  <div className="flex items-center gap-2">
+                    <FiFilter className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
+                    <span className="font-semibold text-gray-700 text-sm sm:text-base">Filter:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
                     {["all", "pending", "approved", "rejected"].map((status) => (
                       <button
                         key={status}
                         onClick={() => setFilter(status)}
-                        className={`px-4 py-2 rounded-lg font-medium transition ${
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition text-sm ${
                           filter === status
                             ? "bg-blue-600 text-white"
                             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -396,7 +398,7 @@ export default function AdminDashboard() {
                 </div>
                 <button
                   onClick={fetchProducts}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition"
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition w-full sm:w-auto"
                 >
                   <FiRefreshCw className="w-4 h-4" />
                   Refresh
@@ -416,28 +418,28 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[800px]">
                     <thead className="bg-gray-50 border-b border-gray-200">
                       <tr>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Image
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Product
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden sm:table-cell">
                           Category
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Price
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider hidden md:table-cell">
                           Location
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -445,8 +447,8 @@ export default function AdminDashboard() {
                     <tbody className="divide-y divide-gray-200">
                       {products.map((product) => (
                         <tr key={product._id} className="hover:bg-gray-50 transition">
-                          <td className="px-6 py-4">
-                            <div className="w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                          <td className="px-3 sm:px-6 py-4">
+                            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
                               {product.images && product.images.length > 0 ? (
                                 <img
                                   src={product.images[0]}
@@ -458,68 +460,71 @@ export default function AdminDashboard() {
                                   }}
                                 />
                               ) : (
-                                <FiPackage className="w-8 h-8 text-gray-400" />
+                                <FiPackage className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-6 py-4">
                             <div>
-                              <p className="font-semibold text-gray-900">{product.productName}</p>
-                              <p className="text-sm text-gray-500">
+                              <p className="font-semibold text-gray-900 text-sm sm:text-base">{product.productName}</p>
+                              <p className="text-xs sm:text-sm text-gray-500">
                                 {product.quantity} {product.unit}
+                              </p>
+                              <p className="text-xs text-gray-500 sm:hidden mt-1">
+                                {product.category} • {product.district}
                               </p>
                             </div>
                           </td>
-                          <td className="px-6 py-4">
-                            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                          <td className="px-3 sm:px-6 py-4 hidden sm:table-cell">
+                            <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
                               {product.category}
                             </span>
                           </td>
-                          <td className="px-6 py-4">
-                            <p className="font-semibold text-gray-900">
+                          <td className="px-3 sm:px-6 py-4">
+                            <p className="font-semibold text-gray-900 text-sm sm:text-base">
                               ₹{product.price}/{product.unit}
                             </p>
                           </td>
-                          <td className="px-6 py-4">
-                            <p className="text-sm text-gray-700">{product.district}</p>
+                          <td className="px-3 sm:px-6 py-4 hidden md:table-cell">
+                            <p className="text-xs sm:text-sm text-gray-700">{product.district}</p>
                             <p className="text-xs text-gray-500">{product.state}</p>
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-3 sm:px-6 py-4">
                             <StatusBadge status={product.status} />
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-2">
+                          <td className="px-3 sm:px-6 py-4">
+                            <div className="flex items-center gap-1 sm:gap-2">
                               <button
                                 onClick={() => setSelectedProduct(product)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
                                 title="View Details"
                               >
-                                <FiEye className="w-5 h-5" />
+                                <FiEye className="w-4 h-4 sm:w-5 sm:h-5" />
                               </button>
                               {product.status === "pending" && (
                                 <>
                                   <button
                                     onClick={() => handleStatusUpdate(product._id, "approved")}
-                                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+                                    className="p-1.5 sm:p-2 text-green-600 hover:bg-green-50 rounded-lg transition"
                                     title="Approve"
                                   >
-                                    <FiCheckCircle className="w-5 h-5" />
+                                    <FiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                                   </button>
                                   <button
                                     onClick={() => handleStatusUpdate(product._id, "rejected")}
-                                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                                    className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                     title="Reject"
                                   >
-                                    <FiXCircle className="w-5 h-5" />
+                                    <FiXCircle className="w-4 h-4 sm:w-5 sm:h-5" />
                                   </button>
                                 </>
                               )}
                               <button
                                 onClick={() => confirmDelete('product', product)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
+                                className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition"
                                 title="Delete Product"
                               >
-                                <FiTrash2 className="w-5 h-5" />
+                                <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                               </button>
                             </div>
                           </td>
@@ -535,13 +540,13 @@ export default function AdminDashboard() {
           {/* Users Tab Content */}
           {activeTab === "users" && (
             <div className="p-6">
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-800">
+              <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-800">
                   Registered Users ({users.length})
                 </h2>
                 <button
                   onClick={fetchUsers}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition w-full sm:w-auto"
                 >
                   <FiRefreshCw className="w-4 h-4" />
                   Refresh
@@ -561,28 +566,25 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full">
+                  <table className="w-full min-w-[600px]">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                           Email
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                           Role
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                           Joined
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Last Login
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -590,27 +592,30 @@ export default function AdminDashboard() {
                     <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
                         <tr key={user._id} className="hover:bg-gray-50 transition">
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
-                              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                <FiUser className="w-5 h-5 text-purple-600" />
+                              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                <FiUser className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
                               </div>
-                              <div className="ml-4">
+                              <div className="ml-3 sm:ml-4">
                                 <div className="text-sm font-medium text-gray-900">
                                   {user.name}
+                                </div>
+                                <div className="text-xs text-gray-500 sm:hidden">
+                                  {user.email}
                                 </div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
                             <div className="text-sm text-gray-900">{user.email}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
                             <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
                               {user.role || 'user'}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <button
                               onClick={() => handleToggleUserStatus(user._id, user.isActive !== false)}
                               className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full cursor-pointer transition ${
@@ -620,27 +625,20 @@ export default function AdminDashboard() {
                               {user.isActive !== false ? 'Active' : 'Inactive'}
                             </button>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs text-gray-500 hidden lg:table-cell">
                             {new Date(user.createdAt).toLocaleDateString('en-IN', {
                               day: '2-digit',
                               month: 'short',
                               year: 'numeric'
                             })}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString('en-IN', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric'
-                            }) : 'Never'}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm">
                             <button
                               onClick={() => confirmDelete('user', user)}
                               className="text-red-600 hover:text-red-900 transition"
                               title="Delete User"
                             >
-                              <FiTrash2 className="w-5 h-5" />
+                              <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                             </button>
                           </td>
                         </tr>
@@ -656,26 +654,26 @@ export default function AdminDashboard() {
 
       {/* Product Detail Modal - Same as before */}
       {selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 sticky top-0 bg-white z-10">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
+            <div className="sticky top-0 z-10 p-4 sm:p-6 bg-white border-b border-gray-200 rounded-t-2xl">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">Product Details</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Product Details</h2>
                 <button
                   onClick={() => setSelectedProduct(null)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition"
                 >
-                  <FiXCircle className="w-6 h-6 text-gray-600" />
+                  <FiXCircle className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
                 </button>
               </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               {/* Product Images */}
               {selectedProduct.images && selectedProduct.images.length > 0 && (
                 <div>
                   <h3 className="text-sm font-semibold text-gray-600 mb-3">Product Images</h3>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     {selectedProduct.images.map((img, idx) => (
                       <div key={idx} className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200">
                         <img
@@ -694,24 +692,24 @@ export default function AdminDashboard() {
               )}
 
               {/* Product Info */}
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">Product Name</h3>
-                  <p className="text-lg font-bold text-gray-900">{selectedProduct.productName}</p>
+                  <p className="text-base sm:text-lg font-bold text-gray-900">{selectedProduct.productName}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">Category</h3>
-                  <p className="text-lg font-bold text-gray-900">{selectedProduct.category}</p>
+                  <p className="text-base sm:text-lg font-bold text-gray-900">{selectedProduct.category}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">Quantity</h3>
-                  <p className="text-lg font-bold text-gray-900">
+                  <p className="text-base sm:text-lg font-bold text-gray-900">
                     {selectedProduct.quantity} {selectedProduct.unit}
                   </p>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-600 mb-2">Price</h3>
-                  <p className="text-lg font-bold text-green-600">
+                  <p className="text-base sm:text-lg font-bold text-green-600">
                     ₹{selectedProduct.price}/{selectedProduct.unit}
                   </p>
                 </div>
@@ -733,7 +731,7 @@ export default function AdminDashboard() {
                   <FiMapPin className="w-4 h-4" />
                   Location Details
                 </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-600">Location:</span>
                     <p className="font-medium text-gray-900">{selectedProduct.location}</p>
@@ -791,7 +789,7 @@ export default function AdminDashboard() {
 
               {/* Action Buttons */}
               {selectedProduct.status === "pending" && (
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button
                     onClick={() => handleStatusUpdate(selectedProduct._id, "approved")}
                     className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition"
@@ -816,7 +814,7 @@ export default function AdminDashboard() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && deleteTarget && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-4 sm:p-6">
             <div className="text-center">
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
                 <FiAlertCircle className="h-6 w-6 text-red-600" />
@@ -830,7 +828,7 @@ export default function AdminDashboard() {
                 {deleteTarget.type === 'user' && ` "${deleteTarget.item.name}"`}
                 ? This action cannot be undone.
               </p>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={() => {
                     setShowDeleteConfirm(false);

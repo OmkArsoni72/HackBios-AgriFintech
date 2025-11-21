@@ -161,10 +161,20 @@ const Header = () => {
             ))}
             
             <div className="pt-4 space-y-3 border-t-2 border-gray-200">
+              {/* Admin Button Mobile */}
+              <Link
+                href="/admin/dashboard"
+                className="flex items-center justify-center gap-2 px-5 py-4 font-bold text-white transition-all duration-300 shadow-md bg-blue-500 hover:bg-blue-600 rounded-xl hover:shadow-lg"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span>⚙️</span>
+                <span>Admin Panel</span>
+              </Link>
+
               {/* Sell Button Mobile */}
               <Link
                 href="/sell"
-                className="flex items-center justify-center gap-2 px-5 py-4 font-bold text-white transition-all duration-300 shadow-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-lg"
+                className="flex items-center justify-center gap-2 px-5 py-4 font-bold text-white transition-all duration-300 shadow-md bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl hover:shadow-lg"
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span>🚀</span>
