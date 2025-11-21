@@ -49,10 +49,18 @@ const AuthWrapper = ({ children }) => {
 
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('userLogout', handleLogout);
+    
+    // Listen for custom login event
+    const handleLogin = (e) => {
+      setUser(e.detail);
+    };
+    
+    window.addEventListener('userLogin', handleLogin);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('userLogout', handleLogout);
+      window.removeEventListener('userLogin', handleLogin);
     };
   }, []);
 

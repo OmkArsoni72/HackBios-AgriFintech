@@ -77,6 +77,9 @@ export default function LoginRegisterPage() {
           localStorage.setItem("agrifinai_token", mockToken);
           localStorage.setItem("agrifinai_user", JSON.stringify(userData));
           
+          // Dispatch custom login event to update header
+          window.dispatchEvent(new CustomEvent('userLogin', { detail: userData }));
+          
           setSuccess("Login successful! Redirecting...");
           setTimeout(() => router.push("/"), 1500);
         } else {
@@ -126,7 +129,7 @@ export default function LoginRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         {/* Back Button */}
         <Link
@@ -140,10 +143,10 @@ export default function LoginRegisterPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg text-white font-bold text-xl">
+            <div className="w-12 h-12 bg-linear-to-r from-green-600 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg text-white font-bold text-xl">
               A
             </div>
-            <span className="text-3xl font-extrabold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
+            <span className="text-3xl font-extrabold bg-linear-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
               AgriFinAI
             </span>
           </div>
@@ -280,7 +283,7 @@ export default function LoginRegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 rounded-xl bg-linear-to-r from-green-600 to-emerald-500 text-white font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

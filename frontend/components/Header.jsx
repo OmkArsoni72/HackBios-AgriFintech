@@ -41,9 +41,17 @@ const Header = () => {
     
     window.addEventListener('userLogout', handleLogout);
     
+    // Also listen for custom login event
+    const handleLogin = (e) => {
+      setUser(e.detail);
+    };
+    
+    window.addEventListener('userLogin', handleLogin);
+    
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('userLogout', handleLogout);
+      window.removeEventListener('userLogin', handleLogin);
     };
   }, []);
 
@@ -63,7 +71,7 @@ const Header = () => {
           <div className="flex items-center justify-between h-24">
             
             {/* Logo Section */}
-            <Link href="/home" className="flex items-center flex-shrink-0 gap-3 transition-opacity duration-300 group hover:opacity-90">
+            <Link href="/home" className="flex items-center shrink-0 gap-3 transition-opacity duration-300 group hover:opacity-90">
               <div className="bg-linear-to-br from-green-500 via-green-600 to-green-700 text-white rounded-2xl p-2.5 font-bold text-2xl w-14 h-14 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                 A
               </div>
