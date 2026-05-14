@@ -25,7 +25,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const userData = localStorage.getItem("agrifinai_user");
+      const userData = localStorage.getItem("agripulse_user");
       if (userData) {
         const parsed = JSON.parse(userData);
         setUser(parsed);
@@ -38,8 +38,8 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("agrifinai_user");
-      localStorage.removeItem("agrifinai_token");
+      localStorage.removeItem("agripulse_user");
+      localStorage.removeItem("agripulse_token");
       setUser(null);
       // Dispatch custom event to notify other components
       window.dispatchEvent(new CustomEvent('userLogout'));
@@ -50,7 +50,7 @@ export default function ProfilePage() {
 
   const handleSaveProfile = () => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("agrifinai_user", JSON.stringify(editForm));
+      localStorage.setItem("agripulse_user", JSON.stringify(editForm));
       setUser(editForm);
       setIsEditing(false);
     }
@@ -100,7 +100,7 @@ export default function ProfilePage() {
                 A
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-                AgriFinAI
+                AgriPulse
               </span>
             </div>
           </div>

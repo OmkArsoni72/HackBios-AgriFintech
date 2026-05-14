@@ -146,7 +146,7 @@ Check accurate weather at:
 
 **Documents:** Aadhaar, Land records, Bank passbook`;
     } else {
-      return `**AgriFinAI Assistant**
+      return `**AgriPulse Assistant**
 
 मैं भारतीय किसानों के लिए सहायक हूं। आप मुझसे पूछ सकते हैं:
 

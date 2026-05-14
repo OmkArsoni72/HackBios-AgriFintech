@@ -58,7 +58,7 @@ const InquiryPage = () => {
         <div className="flex items-center justify-between mb-10">
           <Link href="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 text-white font-bold text-lg flex items-center justify-center">A</div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriFinAI</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriPulse</span>
           </Link>
           <Link href="/" className="text-sm text-green-700 hover:underline flex items-center gap-1">
             <FiArrowLeft /> Back

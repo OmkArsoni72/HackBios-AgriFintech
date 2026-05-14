@@ -534,7 +534,7 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-              Why Choose <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriFinAI</span>
+              Why Choose <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriPulse</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Experience the future of agriculture with our comprehensive platform
@@ -623,7 +623,7 @@ const HomePage = () => {
                 <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl flex items-center justify-center">
                   <span className="text-white font-bold text-lg">A</span>
                 </div>
-                <span className="text-2xl font-bold">AgriFinAI</span>
+                <span className="text-2xl font-bold">AgriPulse</span>
               </div>
               <p className="text-gray-400 leading-relaxed">
                 Connecting farmers with buyers for a sustainable agricultural future.
@@ -670,7 +670,7 @@ const HomePage = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <FiMail className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-400">hello@agrifinai.com</span>
+                  <span className="text-gray-400">hello@agripulse.com</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <FiMapPin className="w-5 h-5 text-green-500" />
@@ -682,7 +682,7 @@ const HomePage = () => {
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center">
             <p className="text-gray-400">
-              © {new Date().getFullYear()} AgriFinAI. All rights reserved.
+              © {new Date().getFullYear()} AgriPulse. All rights reserved.
             </p>
           </div>
         </div>

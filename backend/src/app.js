@@ -22,7 +22,7 @@ app.use('/api', routes);
 app.get('/', (req, res) => {
   res.status(200).json({
     success: true,
-    message: '🌾 AgriFinAI API Server',
+    message: '🌾 AgriPulse API Server',
     version: '1.0.0',
     timestamp: new Date().toISOString()
   });
@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'AgriFinAI Backend is running',
+    message: 'AgriPulse Backend is running',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });

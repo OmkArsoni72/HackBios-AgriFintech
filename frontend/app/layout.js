@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "AgriFinAI",
+  title: "AgriPulse",
   description: "Empowering Indian agriculture with AI-powered financial and crop advisory solutions.",
 };
 

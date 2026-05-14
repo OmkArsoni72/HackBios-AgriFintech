@@ -13,7 +13,7 @@ export default function FarmersPage() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="text-2xl font-bold text-green-700">
-              AgriFinAI
+              AgriPulse
             </Link>
             <div className="flex gap-4">
               <Link href="/" className="text-gray-600 hover:text-green-700">Home</Link>

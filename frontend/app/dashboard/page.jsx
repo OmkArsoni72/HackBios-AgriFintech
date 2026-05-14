@@ -25,8 +25,8 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const user = localStorage.getItem("agrifinai_user");
-      const token = localStorage.getItem("agrifinai_token");
+      const user = localStorage.getItem("agripulse_user");
+      const token = localStorage.getItem("agripulse_token");
       
       if (!user || !token) {
         router.push("/login");
@@ -38,8 +38,8 @@ export default function DashboardPage() {
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("agrifinai_user");
-    localStorage.removeItem("agrifinai_token");
+    localStorage.removeItem("agripulse_user");
+    localStorage.removeItem("agripulse_token");
     // Dispatch custom event to notify other components
     window.dispatchEvent(new CustomEvent('userLogout'));
     router.push("/");
@@ -79,7 +79,7 @@ export default function DashboardPage() {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
             Welcome back, {userData.name}! 👋
           </h1>
-          <p className="text-gray-600">Here's what's happening with your AgriFinAI account today.</p>
+          <p className="text-gray-600">Here's what's happening with your AgriPulse account today.</p>
         </div>
 
         {/* Stats Grid */}

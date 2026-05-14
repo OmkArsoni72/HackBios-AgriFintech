@@ -17,8 +17,8 @@ const AuthWrapper = ({ children }) => {
   useEffect(() => {
     const checkAuth = () => {
       try {
-        const storedUser = localStorage.getItem("agrifinai_user");
-        const storedToken = localStorage.getItem("agrifinai_token");
+        const storedUser = localStorage.getItem("agripulse_user");
+        const storedToken = localStorage.getItem("agripulse_token");
 
         if (storedUser && storedToken) {
           setUser(JSON.parse(storedUser));
@@ -37,7 +37,7 @@ const AuthWrapper = ({ children }) => {
 
     // Listen for storage changes (logout from another tab)
     const handleStorageChange = (e) => {
-      if (e.key === 'agrifinai_user' || e.key === 'agrifinai_token') {
+      if (e.key === 'agripulse_user' || e.key === 'agripulse_token') {
         checkAuth();
       }
     };
@@ -70,7 +70,7 @@ const AuthWrapper = ({ children }) => {
       <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading AgriFinAI...</p>
+          <p className="text-gray-600">Loading AgriPulse...</p>
         </div>
       </div>
     );
@@ -89,7 +89,7 @@ const AuthWrapper = ({ children }) => {
               Authentication Required
             </h2>
             <p className="text-gray-600 mb-6">
-              You need to login to access AgriFinAI features. Please login to continue.
+              You need to login to access AgriPulse features. Please login to continue.
             </p>
             <div className="space-y-3">
               <Link

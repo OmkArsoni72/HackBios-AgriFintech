@@ -175,7 +175,7 @@ const LandingPage = () => {
   // Check login status
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const userData = localStorage.getItem("agrifinai_user");
+      const userData = localStorage.getItem("agripulse_user");
       if (userData) {
         const parsed = JSON.parse(userData);
         setIsLoggedIn(true);
@@ -616,7 +616,7 @@ const LandingPage = () => {
               <h2 className="mb-4 text-4xl font-bold text-gray-900">
                 {t("Why Choose")}{" "}
                 <span className="text-transparent bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text">
-                  AgriFinAI
+                  AgriPulse
                 </span>
               </h2>
               <p className="max-w-2xl mx-auto text-gray-600">
@@ -860,7 +860,7 @@ const LandingPage = () => {
                 <div className="flex items-center justify-center w-10 h-10 font-bold text-white bg-gradient-to-r from-green-600 to-emerald-500 rounded-xl">
                   A
                 </div>
-                <span className="text-xl font-semibold">AgriFinAI</span>
+                <span className="text-xl font-semibold">AgriPulse</span>
               </div>
               <p className="text-sm leading-relaxed">
                 {t("Connecting farmers with buyers for a sustainable agricultural future.")}
@@ -942,7 +942,7 @@ const LandingPage = () => {
                   <FiPhone className="w-4 h-4 text-green-500" /> +91 123 456 7890
                 </li>
                 <li className="flex items-center gap-2">
-                  <FiMail className="w-4 h-4 text-green-500" /> hello@agrifinai.com
+                  <FiMail className="w-4 h-4 text-green-500" /> hello@agripulse.com
                 </li>
                 <li className="flex items-center gap-2">
                   <FiMapPin className="w-4 h-4 text-green-500" /> Mumbai, India
@@ -952,7 +952,7 @@ const LandingPage = () => {
           </div>
 
           <div className="pt-8 mt-12 text-xs text-center text-gray-500 border-t border-gray-800">
-            © {new Date().getFullYear()} AgriFinAI. {t("All rights reserved.")} 
+            © {new Date().getFullYear()} AgriPulse. {t("All rights reserved.")} 
           </div>
         </div>
       </footer>

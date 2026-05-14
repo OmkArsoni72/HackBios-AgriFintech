@@ -61,7 +61,7 @@ export default function LoginRegisterPage() {
         console.log('Login attempt:', formData.email);
         
         // Check if user exists in localStorage
-        const existingUsers = JSON.parse(localStorage.getItem('agrifinai_users') || '[]');
+        const existingUsers = JSON.parse(localStorage.getItem('agripulse_users') || '[]');
         const user = existingUsers.find(u => u.email === formData.email && u.password === formData.password);
         
         if (user) {
@@ -74,8 +74,8 @@ export default function LoginRegisterPage() {
             role: 'farmer'
           };
           
-          localStorage.setItem("agrifinai_token", mockToken);
-          localStorage.setItem("agrifinai_user", JSON.stringify(userData));
+          localStorage.setItem("agripulse_token", mockToken);
+          localStorage.setItem("agripulse_user", JSON.stringify(userData));
           
           // Dispatch custom login event to update header
           window.dispatchEvent(new CustomEvent('userLogin', { detail: userData }));
@@ -90,7 +90,7 @@ export default function LoginRegisterPage() {
         console.log('Registration attempt:', formData.email);
         
         // Get existing users from localStorage
-        const existingUsers = JSON.parse(localStorage.getItem('agrifinai_users') || '[]');
+        const existingUsers = JSON.parse(localStorage.getItem('agripulse_users') || '[]');
         
         // Check if email already exists
         if (existingUsers.find(u => u.email === formData.email)) {
@@ -108,7 +108,7 @@ export default function LoginRegisterPage() {
         
         // Save to localStorage
         existingUsers.push(newUser);
-        localStorage.setItem('agrifinai_users', JSON.stringify(existingUsers));
+        localStorage.setItem('agripulse_users', JSON.stringify(existingUsers));
         
         setSuccess("Registration successful! Please login.");
         setIsLogin(true);
@@ -147,7 +147,7 @@ export default function LoginRegisterPage() {
               A
             </div>
             <span className="text-3xl font-extrabold bg-linear-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              AgriFinAI
+              AgriPulse
             </span>
           </div>
           <h2 className="text-2xl font-bold text-gray-900">

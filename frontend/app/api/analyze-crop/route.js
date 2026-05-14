@@ -162,7 +162,7 @@ function generateFallbackAnalysis(cropName, symptoms, soilType, location) {
     treatment.push('Spray Imidacloprid (0.5ml/liter) for aphids, use yellow sticky traps');
   }
 
-  return `**🌾 AgriFinAI Crop Health Analysis**
+  return `**🌾 AgriPulse Crop Health Analysis**
 **Crop:** ${cropName}
 **Location:** ${location}
 **Soil Type:** ${soilType}

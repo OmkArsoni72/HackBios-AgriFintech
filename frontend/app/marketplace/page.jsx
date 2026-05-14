@@ -46,8 +46,8 @@ export default function MarketplacePage() {
   }, [searchTerm, selectedCategory, products]);
 
   const checkAuthentication = () => {
-    const token = localStorage.getItem("agrifinai_token");
-    const userData = localStorage.getItem("agrifinai_user");
+    const token = localStorage.getItem("agripulse_token");
+    const userData = localStorage.getItem("agripulse_user");
 
     if (token && userData) {
       setIsAuthenticated(true);

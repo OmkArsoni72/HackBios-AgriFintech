@@ -4,7 +4,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://hack-bios-agri-
 // Get auth token from localStorage
 const getAuthToken = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('agrifinai_token');
+    return localStorage.getItem('agripulse_token');
   }
   return null;
 };
@@ -84,8 +84,8 @@ export const authAPI = {
   // Logout (client-side)
   logout: () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('agrifinai_token');
-      localStorage.removeItem('agrifinai_user');
+      localStorage.removeItem('agripulse_token');
+      localStorage.removeItem('agripulse_user');
     }
   },
 };

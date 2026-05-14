@@ -28,7 +28,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/agrifinai')
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/agripulse')
     .then(() => {
         console.log('✅ Connected to MongoDB');
         const server = app.listen(PORT, () => {

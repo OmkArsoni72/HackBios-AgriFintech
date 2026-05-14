@@ -13,8 +13,8 @@ const Header = () => {
   useEffect(() => {
     // Check if user is logged in
     const checkUser = () => {
-      const storedUser = localStorage.getItem("agrifinai_user");
-      const storedToken = localStorage.getItem("agrifinai_token");
+      const storedUser = localStorage.getItem("agripulse_user");
+      const storedToken = localStorage.getItem("agripulse_token");
       
       if (storedUser && storedToken) {
         setUser(JSON.parse(storedUser));
@@ -27,7 +27,7 @@ const Header = () => {
     
     // Listen for storage changes (logout from another tab)
     const handleStorageChange = (e) => {
-      if (e.key === 'agrifinai_user' || e.key === 'agrifinai_token') {
+      if (e.key === 'agripulse_user' || e.key === 'agripulse_token') {
         checkUser();
       }
     };
@@ -77,7 +77,7 @@ const Header = () => {
               </div>
               <div className="flex-col hidden sm:flex">
                 <div className="text-2xl font-black tracking-tight text-gray-900">
-                  Agri<span className="text-green-600">Fin</span>AI
+                  Agri<span className="text-green-600">Pulse</span>
                 </div>
                 <div className="text-xs font-bold tracking-wide text-green-600">SMART FARMING</div>
               </div>

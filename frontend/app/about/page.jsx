@@ -164,7 +164,7 @@ const AboutPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
-                Why Choose <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriFinAI</span>
+                Why Choose <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">AgriPulse</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                 Comprehensive solutions designed specifically for the modern Indian farmer
@@ -194,11 +194,11 @@ const AboutPage = () => {
                   📖 Our Journey
                 </div>
                 <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
-                  The Story Behind <span className="text-green-300">AgriFinAI</span>
+                  The Story Behind <span className="text-green-300">AgriPulse</span>
                 </h2>
                 <div className="space-y-6 text-green-100 leading-relaxed">
                   <p className="text-lg">
-                    AgriFinAI was born from a simple yet powerful idea: to leverage cutting-edge AI 
+                    AgriPulse was born from a simple yet powerful idea: to leverage cutting-edge AI 
                     technology to solve the age-old problems faced by Indian farmers.
                   </p>
                   <p>
@@ -281,7 +281,7 @@ const AboutPage = () => {
               Ready to Transform Your Farm?
             </h2>
             <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-              Join thousands of farmers who are already using AgriFinAI to grow their business 
+              Join thousands of farmers who are already using AgriPulse to grow their business 
               and improve their livelihoods.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
